@@ -1,0 +1,91 @@
+/* Providing header's CSS*/
+
+header {
+ position: fixed; /* Making sure header is always visible*/
+ top: 0;
+ width: 100%;
+
+ background-color: white;
+ border-bottom: 1px solid rgb(252, 252, 252);
+
+ /* Making sure header stays on top of all content */
+ z-index: 9999;
+
+ height: 80px;
+}
+
+.logo {
+  width: 80px;
+  height: 45px;
+  margin: 15px;
+}
+
+
+/* Positioning nav */
+nav {
+  display: inline-block;
+  width: 480px;
+  height: 50px;
+
+  position: absolute;
+  right: 0;
+}
+
+@media screen and (max-width: 500px) {
+  .logo {
+    display: none;
+  }
+}
+
+
+
+.nav_button {
+  text-decoration: none;
+  user-select: none;
+  text-align: center;
+  display: inline-block;
+
+  height: 28px;
+  width: 100px;
+  padding-top: 1rem;
+
+  margin-top: 1.2rem;
+
+  cursor: pointer;
+}
+
+.nav_button:hover, .nav_button:focus {
+  background-color: rgb(240, 240, 240);
+  /*font-size: 1.2rem;*/
+}
+
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 20px;
+  top: 80px;
+
+  min-width: 140px;
+
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+
+  border: 1px solid lightgrey;
+  background-color: white;
+}
+
+.dropdown-content a:hover {
+  background-color: rgb(240, 240, 240);
+}
+
+.dropdown-content_show {
+  display: block;
+}

@@ -1,0 +1,182 @@
+main{
+  margin-top: 120px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.filter {
+  width: 300px;
+  border: 1px solid lightgrey;
+  /*background-color: darkblue;*/
+  height: 550px;
+  margin-top: -4rem;
+
+  display: inline-block;
+}
+
+.filterHeading {
+  text-align: center;
+}
+
+.filterHeader {
+  border-bottom: 1px solid lightgrey;
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+}
+
+.filterSearch {
+  margin-left: 1rem;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid lightgrey
+}
+
+.searchBtn {
+  border: 1px solid lightgrey;
+  padding-top: .4rem;
+  margin-left: 1rem;
+}
+
+.searchBtn:hover, .searchBtn:focus {
+  color: red;
+}
+
+.filterCheckbox {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.infoBreak {
+  text-align: center;
+}
+
+.priceDisplay {
+  width: 30px;
+  border: none;
+  font-weight: bold;
+  pointer-events:none;
+}
+
+.distanceDisplay {
+  width: 50px;
+  border: none;
+  font-weight: bold;
+  pointer-events:none;
+}
+
+#priceSlider {
+  width: 110px;
+}
+
+.slidecontainer {
+  margin-left: 1rem;
+}
+
+.startFilter {
+  border: 1px solid lightgrey;
+  display: block;
+  margin: auto;
+  padding: .5rem;
+  margin-top: 2rem;
+}
+
+.startFilter:hover, .startFilter:focus {
+  color: red;
+}
+
+
+/* Flex box for displaying partners stores*/
+
+.partners {
+  display: inline-block;
+  border: 2px solid black;
+  width: calc(100% - 370px);
+
+  position: relative;
+  top: -15rem;
+  margin-left: 2rem;
+}
+
+.partnerFlex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.store {
+  border: 1px solid lightgrey;
+  width: 285px;
+  height: 530px;
+
+  margin: 2rem;
+}
+
+h2 {
+  text-align: center;
+  font-size: 1rem;
+}
+
+h3 {
+  font-size: 0.9rem;
+}
+
+.storeSection {
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
+}
+
+.storeIcon {
+  font-size: 1.6rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  padding-top: 1rem;
+
+  color: grey;
+}
+
+.fa-dollar-sign {
+  margin-left: 1.4rem !important;
+}
+
+.storeText {
+  /*display: inline-block;*/
+  text-align: center;
+  margin-top: -1rem;
+  margin-left: 0.8rem;
+}
+
+.favSelect {
+  position: absolute;
+  color: black;
+  font-size: 2rem;
+  margin: 10px;
+  cursor: pointer;
+  /*border: 1px solid black;*/
+}
+
+.storeMoreBtn {
+  border: 1px solid lightgrey;
+
+  display: block;
+  margin: auto;
+  margin-top: 1rem;
+
+  width: 35px;
+  padding: 0.6rem;
+  user-select: none;
+}
+
+.storeMoreBtn:hover, .storeMoreBtn:focus {
+  color: red;
+}
+
+.store_img {
+  width: 285px;
+  height: 150px;
+}
+
+
+
+
+

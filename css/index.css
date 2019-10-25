@@ -1,0 +1,171 @@
+/* Main Content*/
+
+/* A container to put 2 sections*/
+.highLevel {
+  display: flex;
+  /*flex-wrap: wrap;*/
+  margin-top: 80px;
+  margin-bottom: 10rem;
+}
+
+/*Positioning the heading to the middle of two sections*/
+h1 {
+  font-family: 'Merriweather', serif;
+  font-size: 3rem;
+
+  position: absolute;
+  top: 8rem;
+  left: 56%;
+}
+
+
+.cardInfo {
+  width: 300px;
+  display: block;
+  margin: auto;
+  margin-top: 10rem;
+  line-height: 2;
+}
+
+.cardInfoBtns {
+  margin: auto;
+  width: 470px;
+
+  margin-top: 5rem;
+}
+
+/* Decrating card a tag buttons */
+.cardInfoNav {
+  text-decoration: none;
+  text-align: center;
+
+  font-size: 1.3rem;
+  margin-left: 1rem;
+
+  padding: 1rem;
+  border: 2px solid lightgrey;
+}
+
+.cardInfoNav:hover, .cardInfoNav:focus {
+  color: red;
+}
+
+@media screen and (max-width: 850px) {
+  .image_card {
+    display: none;
+  }
+
+  h1 {
+    left: 50%;
+  }
+}
+
+@media screen and (min-width: 851px) {
+  .image_card {
+    flex: 1;
+
+    background-image: linear-gradient(to top, rgb(230, 230, 230) 50%, white);
+
+    height: calc(100vh - 80px);
+  }
+}
+
+
+.info {
+  flex: 2;
+  height: calc(100vh - 80px);
+}
+
+.recardCardImg {
+  margin-left: 5%;
+  margin-top: 5rem;
+
+  max-height: 800px;
+  width: auto;
+
+  transform: rotate(20deg);
+}
+
+
+
+h2, h3 {
+  font-family: 'Merriweather', serif;
+  text-align: center;
+}
+
+h2 {
+  margin-top: 2.2rem;
+  font-size: 2.2rem;
+}
+
+.cardDetail {
+  display: flex;
+  margin-top: 5rem;
+}
+
+.details {
+  flex: 1;
+
+  border: 1px solid rgb(220, 220, 220);
+
+  min-height: 300px;
+}
+
+.detailText {
+  margin: auto;
+  margin-bottom: 2rem;
+  max-width: 300px;
+
+  text-align: center;
+}
+
+.detailIcon {
+  font-size: 4rem;
+  color: skyblue;
+  display: inline-block;
+  width: 100%;
+
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.fa-mobile-alt {
+  color: orange;
+}
+
+.fa-dollar-sign {
+  color: rgb(231, 84, 128);
+}
+
+.detailJoin {
+  text-decoration: none;
+  text-align: center;
+
+  display: block;
+  width: 100px;
+  margin: auto;
+  margin-top: 3rem;
+
+  font-size: 1.3rem;
+
+  padding: 1rem;
+  border: 2px solid lightgrey;
+}
+
+.detailJoin:hover, .detailJoin:focus {
+  color: red;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

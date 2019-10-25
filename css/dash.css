@@ -1,0 +1,143 @@
+main {
+  margin-top: 120px;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+.sectionDash {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+
+  margin-left: 250px;
+  margin-right: 2rem;
+  margin-top: 1px;
+  /*height: 4000px;*/
+}
+
+.userEdit {
+  flex-shrink: 1;
+  border: 1px solid lightgrey;
+
+  height: 250px;
+  width: 250px;
+
+  margin-left: 2rem;
+  margin-bottom: 2rem;
+}
+
+.favText {
+  text-align: center;
+}
+
+/* Users side dashboard */
+.userDash {
+  width: 200px;
+  border: 1px solid lightgrey;
+
+  margin-left: 1rem;
+  top: 7.6rem;
+  position: fixed;
+}
+
+.iconStar {
+  color: gold;
+
+  position: absolute;
+  margin: 1rem;
+}
+
+.favBtn {
+  display: block;
+  margin: auto;
+  margin-bottom: 1rem;
+
+  border: 2px solid lightgrey;
+  padding: 0.5rem;
+}
+
+.favBtn:hover {
+  color: red;
+}
+
+.food {
+  border: 1px solid red;
+}
+
+.grocery {
+  border: 1px solid blue;
+}
+
+.activity {
+  border: 1px solid green;
+}
+
+/* Displaying user qr image */
+.user_qr {
+  display: block;
+  margin: auto;
+  margin-bottom: 1rem;
+
+  max-width: 40%;
+  height: auto;
+}
+
+/* Positioning text */
+.userPointText {
+  margin-left: 1rem;
+}
+
+/* Displaying user icon */
+.userIcon {
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+  margin: auto;
+  display: block;
+  margin-top: 1rem;
+}
+
+/* Section of dashboard sidebar*/
+.dashSec {
+  border-top: 1px solid rgb(230, 230, 230);
+  border-bottom: 1px solid rgb(230, 230, 230);
+}
+
+.dashSec:hover {
+  border-top: 1px solid rgb(130, 130, 130);
+  border-bottom: 1px solid rgb(130, 130, 130);
+}
+
+/* Dashboard information display*/
+.dashHeadings {
+  margin-left: 1rem;
+  font-weight: bold;
+}
+
+.userPoints {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+/* Edit user button*/
+.logout {
+  margin: auto;
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: .5rem;
+
+  border: 2px solid lightgrey;
+}
+
+.logout:hover {
+  color: red;
+}
+
+
+
+
+
+

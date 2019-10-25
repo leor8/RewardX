@@ -1,0 +1,145 @@
+/* Display under fixed header*/
+main {
+  margin-top: 120px;
+}
+
+h1 {
+  margin-left: 2rem;
+}
+
+.score {
+  float: right;
+  margin-right: 2rem;
+
+  font-size: 1rem;
+
+  border: 1px solid lightgrey;
+  padding: .5rem;
+}
+
+
+.storeDes {
+  margin-left: 3rem;
+  margin-right: 2rem;
+}
+
+.favSelect {
+  font-size: 1.7rem;
+  margin-left: 1rem;
+  cursor: pointer;
+}
+
+.imgs {
+  flex: 0.25;
+}
+
+.storeImg {
+  width: 200px;
+  margin: 1rem;
+
+}
+
+.storeSec {
+  display: flex;
+}
+
+.storeInfo {
+  flex: 0.75;
+  margin: 1.8rem 1rem 2rem 1rem;
+}
+
+.mapIcon {
+  font-size: 3rem;
+  margin-left: 2rem;
+  margin-top: 2rem;
+}
+
+.storeInfoText {
+  display: inline-block;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.eachSection {
+  margin-bottom: 1rem;
+}
+
+form {
+  border: 1px solid lightgrey;
+  margin-right: 1rem;
+  padding: 0.5rem;
+}
+
+form > div {
+  text-align: center
+}
+
+/* Positioning textarea */
+textarea {
+  margin: auto;
+  display: block;
+  margin-top: 2rem;
+  width: 60%;
+  height: 100px;
+}
+
+.commentInput {
+
+  /*removing default settings*/
+  border: none;
+  outline: none;
+  appearance: none;
+
+  margin-left: 1rem;
+  border-bottom: 1px solid lightgrey;
+}
+
+
+.eachComment {
+  border: 1px solid black;
+  padding: 1rem;
+
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.commentIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 100%;
+  margin-right: 2rem;
+
+  flex-shrink: 0.5;
+}
+
+.commentName {
+  flex: 1;
+}
+
+.reviewDetail {
+  flex: 2;
+}
+
+.returnBtn {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+  border: 1px solid lightgrey;
+  background-color: white;
+
+  cursor: pointer;
+}
+
+.fa-arrow-left {
+  position: relative;
+  font-size: 2rem;
+  left: 1rem;
+  top: .8rem;
+}
+
+
+
+
