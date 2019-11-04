@@ -63,691 +63,393 @@
       <!-- The main content of index page -->
       <main>
 
-        <h1>Our Partners</h1>
+        <h1 style="margin-bottom: 5rem;">Our Partners</h1>
         <!-- Filter -->
         <section class="filter">
-          <div class="filterHeader">
+
+          <form class="filterHeader" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
             <h2 class="filterHeading">RewardX</h2>
-            <input type="text" name="nameSearch" class="filterSearch" placeholder="Search for a shop">
+            <?php
+            // Check if the filter result is by name search
+              if(isset($_POST["nameSearch"])){
+                echo "<input type=\"text\" name=\"nameSearch\" class=\"filterSearch\" value=". $_POST["nameSearch"]. " placeholder=\"Search for a shop\">";
+              } else {
+                echo "<input type=\"text\" name=\"nameSearch\" class=\"filterSearch\" placeholder=\"Search for a shop\">";
+              }
+            ?>
+
             <button class="searchBtn">Search</button>
-          </div>
+          </form>
 
-          <div class="filterCheckbox">
-            <label>Within 5 KM</label>
-            <input  type="checkbox" name="favorite1" value="Near">
-          </div>
+          <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<!--
+            <div class="filterCheckbox">
+              <label>Within 5 KM</label>
+              <input  type="checkbox" name="near" value="Near">
+            </div> -->
 
-          <div class="filterCheckbox">
-            <label>Opens Now</label>
-            <input  type="checkbox" name="favorite1" value="Open">
-          </div>
+            <div class="filterCheckbox">
+              <label>Opens Now</label>
+              <?php
+                if(isset($_POST["open"])){
+                  echo "<input type=\"checkbox\" name=\"open\" value=\"Open\" checked>";
+                } else {
+                  echo "<input type=\"checkbox\" name=\"open\" value=\"Open\">";
+                }
+              ?>
+            </div>
 
-          <div class="filterCheckbox">
-            <label>Cheap Shop</label>
-            <input  type="checkbox" name="favorite1" value="Cheap">
-          </div>
+            <div class="filterCheckbox">
+              <label>Cheap Shop</label>
+              <?php
+                if(isset($_POST["cheap"])){
+                  echo "<input type=\"checkbox\" name=\"cheap\" value=\"Cheap\" checked>";
+                } else {
+                  echo "<input type=\"checkbox\" name=\"cheap\" value=\"Cheap\">";
+                }
+              ?>
 
-          <div class="filterCheckbox">
-            <label>Restuarants</label>
-            <input  type="checkbox" name="favorite1" value="Food">
-          </div>
+            </div>
 
-          <div class="filterCheckbox">
-            <label>Grocery Stores</label>
-            <input  type="checkbox" name="favorite1" value="Grocery">
-          </div>
+            <div class="filterCheckbox">
+              <label>Restuarants</label>
+              <?php
+                if(isset($_POST["food"])){
+                  echo "<input type=\"checkbox\" name=\"food\" value=\"Food\" checked>";
+                } else {
+                  echo "<input type=\"checkbox\" name=\"food\" value=\"Food\">";
+                }
+              ?>
+            </div>
 
-          <div class="filterCheckbox">
-            <label>Activity</label>
-            <input  type="checkbox" name="favorite1" value="Activity">
-          </div>
+            <div class="filterCheckbox">
+              <label>Grocery Stores</label>
+              <?php
+                if(isset($_POST["shop"])){
+                  echo "<input type=\"checkbox\" name=\"shop\" value=\"Shop\" checked>";
+                } else {
+                  echo "<input type=\"checkbox\" name=\"shop\" value=\"Shop\">";
+                }
+              ?>
+            </div>
 
-          <div class="filterCheckbox">
-            <label>On Promotion</label>
-            <input  type="checkbox" name="favorite1" value="Promotion">
-          </div>
+            <div class="filterCheckbox">
+              <label>Activity</label>
+              <?php
+                if(isset($_POST["activity"])){
+                  echo "<input type=\"checkbox\" name=\"activity\" value=\"Activity\" checked>";
+                } else {
+                  echo "<input type=\"checkbox\" name=\"activity\" value=\"Activity\">";
+                }
+              ?>
+            </div>
 
-          <!-- TO break checkboxes and sliders -->
-          <p class="infoBreak"> -------------- More -------------- </p>
+            <!-- TO break checkboxes and sliders -->
+            <p class="infoBreak"> -------------- More -------------- </p>
 
-          <div class="slidecontainer">
-            <label>Price Per Person</label>
-            <input type="text" id="textInput" value="$20" class="priceDisplay">
-            <input type="range" min="20" max="99" value="20" class="slider" id="priceSlider" onchange="updateTextInput(this.value);">
-          </div>
+            <div class="slidecontainer">
+              <label>Price Per Person</label>
 
-          <div class="slidecontainer">
-            <label>KMs from</label>
-            <input type="text" id="distanceInput" value="5KM" class="distanceDisplay">
-            <input type="range" min="5" max="200" value="20" class="slider" id="distanceSlider" onchange="updateDistance(this.value);">
-          </div>
+              <?php
+                if(isset($_POST["priceSlider"])){
+                  echo "<input type=\"text\" id=\"textInput\" value=\"$". $_POST["priceSlider"]. "\" class=\"priceDisplay\">";
+                  echo "<input name=\"priceSlider\" type=\"range\" min=\"0\" max=\"99\" value=\"". $_POST["priceSlider"]. "\" class=\"slider\" id=\"priceSlider\" onchange=\"updateTextInput(this.value);\">";
+                } else {
+                  echo "<input type=\"text\" id=\"textInput\" value=\"$0\" class=\"priceDisplay\">";
+                  echo "<input name=\"priceSlider\" type=\"range\" min=\"0\" max=\"99\" value=\"0\" class=\"slider\" id=\"priceSlider\" onchange=\"updateTextInput(this.value);\">";
+                }
+              ?>
+            </div>
 
-          <button class="startFilter">Filter</button>
+<!--             <div class="slidecontainer">
+              <label>KMs from</label>
+              <input type="text" id="distanceInput" value="5KM" class="distanceDisplay">
+              <input name="rangeSlider"type="range" min="5" max="100" value="5" class="slider" id="distanceSlider" onchange="updateDistance(this.value);">
+            </div> -->
+
+            <button class="startFilter" type="submit">Filter</button>
+
+          </form>
         </section>
 
-        <!-- List of all partnered stores -->
+        <!-- List of all partnered stores retrieved from database-->
         <section class="partners">
           <div class="partnerFlex">
 
             <!-- The following php block is used to find the current week ofthe day and check if the shop is open when user first enters the page -->
             <?php
 
+              // Getting default db varialbe
+              require 'DBinfo.php';
+
+              // Opening a db connection
+              $con = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+
+              // Building query based on filter or if no filters are applied
+
+              $storesQuery = "SELECT * FROM Store ";
+
+              $checkOpen = false;
+
+              if(isset($_POST["nameSearch"])) {
+                // if nameSearch exists that means a search query is entered
+                $storesQuery = "SELECT * FROM Store WHERE StoreName LIKE '%". $_POST["nameSearch"]."%'";
+              } else if(count($_POST) >= 1) {
+                $storesQuery .= "WHERE ";
+                // if name Search does not exist but there is something passed by post variable, certain filter is checked.
+                if(isset($_POST["cheap"])) {
+                  $storesQuery .= "StorePriceAverage <= 15 AND StorePriceAverage > 0 AND ";
+                }
+
+                if(isset($_POST["food"])) {
+                  $storesQuery .= "StoreType = \"Food\" AND ";
+                }
+
+                if(isset($_POST["shop"])) {
+                  $storesQuery .= "StoreType = \"Shop\" AND ";
+                }
+
+                if(isset($_POST["activity"])) {
+                  $storesQuery .= "StoreType = \"Activity\" AND ";
+                }
+
+                if($_POST["priceSlider"] >= 5) {
+                  $storesQuery .= "StorePriceAverage <= ". $_POST["priceSlider"] ." AND StorePriceAverage > 0 AND ";
+                }
+
+                // Removing the last AND from query
+                $storesQuery = substr($storesQuery, 0, -5);
+              }
+
+              if(isset($_POST["open"])) { // Open will not be interacting with the database instead with the code only
+                  $checkOpen = true;
+              }
+
+
+              // Else just select all the stores
+
+              // echo $storesQuery;
+
+              // get results
+              $storeResult = mysqli_query($con, $storesQuery);
+
+              // If query failed, end the program
+              if (!$storeResult) {
+                die("Database query failed.");
+              }
+
+
               // Getting today's date
               date_default_timezone_set('America/Vancouver');
               $day = date('D', time());
               $currTime = date('h:i a', time());
 
-              // Subway
+              $displayed = false; // this variable is used to check if there is any not opned right now being displayed
 
-              // Saving each line in the file in to an array by file() function
-              $subwayFile = file("txtDB/subway.txt");
-              $subwayTime; // To hold the output text on whether the place is open or not
+              // Calculating if the store is currently open
 
-              if($subwayFile) {
-                switch ($day) {
+              // constructing the store cards
+              $resultMoreThanOne = false;
+
+              while ($row = mysqli_fetch_assoc($storeResult)) {
+                $currOpenStatus;
+
+                $hoursByDay = explode(" ", $row["StoreHours"]);
+
+                $startingTime;
+                $endTime;
+                $openNow = false;
+
+
+                switch($day) {
                   case 'Sun':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $subwayFile[5])[1])[0];
-                    $endTime = explode('–', explode(" ", $subwayFile[5])[1])[1];
+                    $startingTime = explode('_', $hoursByDay[0])[0];
+                    $endTime = explode('_', $hoursByDay[0])[1];
 
                     // Converting time to a formate that is decodeable by strtotime
                     $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
                     $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
 
+
+
                     if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $subwayTime = $startingTime. " to ". $endTime. "(OPEN)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                      $openNow = true;
                     } else {
-                      $subwayTime = $startingTime. " to ". $endTime. "(CLOSED)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
                     }
                     break;
 
                   case 'Mon':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $subwayFile[6])[1])[0];
-                    $endTime = explode('–', explode(" ", $subwayFile[6])[1])[1];
+                    $startingTime = explode('_', $hoursByDay[1])[0];
+                    $endTime = explode('_', $hoursByDay[1])[1];
 
                     // Converting time to a formate that is decodeable by strtotime
                     $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
                     $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
 
                     if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $subwayTime = $startingTime. " to ". $endTime. "(OPEN)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                      $openNow = true;
                     } else {
-                      $subwayTime = $startingTime. " to ". $endTime. "(CLOSED)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
                     }
                     break;
 
                   case 'Tue':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $subwayFile[7])[1])[0];
-                    $endTime = explode('–', explode(" ", $subwayFile[7])[1])[1];
+                    $startingTime = explode('_', $hoursByDay[2])[0];
+                    $endTime = explode('_', $hoursByDay[2])[1];
 
                     // Converting time to a formate that is decodeable by strtotime
                     $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
                     $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
 
                     if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $subwayTime = $startingTime. " to ". $endTime. "(OPEN)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                      $openNow = true;
                     } else {
-                      $subwayTime = $startingTime. " to ". $endTime. "(CLOSED)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
                     }
                     break;
 
                   case 'Wed':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $subwayFile[8])[1])[0];
-                    $endTime = explode('–', explode(" ", $subwayFile[8])[1])[1];
+                    $startingTime = explode('_', $hoursByDay[3])[0];
+                    $endTime = explode('_', $hoursByDay[3])[1];
 
                     // Converting time to a formate that is decodeable by strtotime
                     $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
                     $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
 
                     if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $subwayTime = $startingTime. " to ". $endTime. "(OPEN)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                      $openNow = true;
                     } else {
-                      $subwayTime = $startingTime. " to ". $endTime. "(CLOSED)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
                     }
                     break;
 
                   case 'Thu':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $subwayFile[9])[1])[0];
-                    $endTime = explode('–', explode(" ", $subwayFile[9])[1])[1];
+                    $startingTime = explode('_', $hoursByDay[4])[0];
+                    $endTime = explode('_', $hoursByDay[4])[1];
 
                     // Converting time to a formate that is decodeable by strtotime
                     $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
                     $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
 
                     if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $subwayTime = $startingTime. " to ". $endTime. "(OPEN)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                      $openNow = true;
                     } else {
-                      $subwayTime = $startingTime. " to ". $endTime. "(CLOSED)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
                     }
                     break;
 
                   case 'Fri':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $subwayFile[10])[1])[0];
-                    $endTime = explode('–', explode(" ", $subwayFile[10])[1])[1];
+                    $startingTime = explode('_', $hoursByDay[5])[0];
+                    $endTime = explode('_', $hoursByDay[5])[1];
 
                     // Converting time to a formate that is decodeable by strtotime
                     $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
                     $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
 
                     if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $subwayTime = $startingTime. " to ". $endTime. "(OPEN)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                      $openNow = true;
                     } else {
-                      $subwayTime = $startingTime. " to ". $endTime. "(CLOSED)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
                     }
                     break;
 
                   case 'Sat':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $subwayFile[11])[1])[0];
-                    $endTime = explode('–', explode(" ", $subwayFile[11])[1])[1];
+                    $startingTime = explode('_', $hoursByDay[6])[0];
+                    $endTime = explode('_', $hoursByDay[6])[1];
 
                     // Converting time to a formate that is decodeable by strtotime
                     $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
                     $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
 
                     if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $subwayTime = $startingTime. " to ". $endTime. "(OPEN)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                      $openNow = true;
                     } else {
-                      $subwayTime = $startingTime. " to ". $endTime. "(CLOSED)";
+                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
                     }
                     break;
-                }
+
+
+                  }
+
+                  // Check if the price average exits
+                  $priceAverage;
+                  if($row["StorePriceAverage"] == -1) {
+                    $priceAverage = "Based on individuals";
+                  } else {
+                    $priceAverage = "$". $row["StorePriceAverage"]. "/Person";
+                  }
+
+
+                  // Outputing the card after setting the time
+
+                  if($checkOpen) { // If open is checked
+                    if(!$openNow) {
+                      continue;
+                    }
+                  }
+
+                  if(!$displayed) { // only run once for faster perfromance
+                    $displayed = true;
+                  }
+
+                  $detailPageTag;
+                  if($openNow) {
+                    $detailPageTag= "<a class=\"storeMoreBtn\" href=\"storeDetail.php?id=". $row["StoreId"]. "&open=1\">More</a>";
+                  } else {
+                    $detailPageTag= "<a class=\"storeMoreBtn\" href=\"storeDetail.php?id=". $row["StoreId"]. "&open=0\">More</a>";
+                  }
+
+                  echo "
+                    <div class=\"store\">
+                      <i class=\"far fa-star favSelect\"></i>
+                      <img class=\"store_img\" src=\"". $row["StoreImage"]. "/1.png\">
+                      <h2>". $row["StoreName"]. "<br> ($1:". $row["StorePointsPerDollar"]. " points) </h2>
+
+                      <div class=\"storeSection\">
+                         <i class=\"fas fa-clock storeIcon\"></i>
+                         <p class=\"storeText\" style=\"font-size: 0.9rem;\"> ". $currOpenStatus. " </p>
+                       </div>
+
+                       <div class=\"storeSection\">
+                         <i class=\"fas fa-shopping-basket storeIcon\"></i>
+                         <p class=\"storeText\">". $row["StoreType"]. "</p>
+                       </div>
+
+                       <div class=\"storeSection\">
+                         <i class=\"fas fa-dollar-sign storeIcon\"></i>
+                         <p class=\"storeText\">". $priceAverage. "</p>
+                       </div>
+
+                       <div class=\"storeSection\">
+                         <i class=\"far fa-smile storeIcon\"></i>
+                         <p class=\"storeText\">". $row["StoreRatings"]. " Satisfactory Score</p>
+                       </div>
+
+                       ".  $detailPageTag. "
+
+                    </div>
+                  ";
 
               }
 
-
-              // Guildford
-              $gfrcFile = file("txtDB/guildfordRecCenter.txt");
-              $gfrcTime;
-              if($gfrcFile) {
-                switch ($day) {
-                  case 'Sun':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $gfrcFile[5])[1])[0];
-                    $endTime = explode('–', explode(" ", $gfrcFile[5])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Mon':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $gfrcFile[6])[1])[0];
-                    $endTime = explode('–', explode(" ", $gfrcFile[6])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Tue':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $gfrcFile[7])[1])[0];
-                    $endTime = explode('–', explode(" ", $gfrcFile[7])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Wed':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $gfrcFile[8])[1])[0];
-                    $endTime = explode('–', explode(" ", $gfrcFile[8])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Thu':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $gfrcFile[9])[1])[0];
-                    $endTime = explode('–', explode(" ", $gfrcFile[9])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Fri':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $gfrcFile[10])[1])[0];
-                    $endTime = explode('–', explode(" ", $gfrcFile[10])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Sat':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $gfrcFile[11])[1])[0];
-                    $endTime = explode('–', explode(" ", $gfrcFile[11])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $gfrcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-                }
-
+              // If there is no results found
+              if (mysqli_num_rows($storeResult) == 0 || !$displayed) {
+                echo "<p style=\"margin: auto; margin-top: 2rem; margin-bottom: 2rem;\">Your search did not return any results, please try again</p>";
               }
+              // Free the results
+              mysqli_free_result($storeResult);
 
-
-              // Mcdonalds
-              $mcFile = file("txtDB/mcdonal.txt");
-              $mcTime;
-              if($mcFile) {
-                switch ($day) {
-                  case 'Sun':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $mcFile[5])[1])[0];
-                    $endTime = explode('–', explode(" ", $mcFile[5])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $mcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $mcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Mon':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $mcFile[6])[1])[0];
-                    $endTime = explode('–', explode(" ", $mcFile[6])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $mcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $mcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Tue':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $mcFile[7])[1])[0];
-                    $endTime = explode('–', explode(" ", $mcFile[7])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $mcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $mcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Wed':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $mcFile[8])[1])[0];
-                    $endTime = explode('–', explode(" ", $mcFile[8])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $mcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $mcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Thu':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $mcFile[9])[1])[0];
-                    $endTime = explode('–', explode(" ", $mcFile[9])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $mcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $mcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Fri':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $mcFile[10])[1])[0];
-                    $endTime = explode('–', explode(" ", $mcFile[10])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $mcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $mcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Sat':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $mcFile[11])[1])[0];
-                    $endTime = explode('–', explode(" ", $mcFile[11])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $mcTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $mcTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-                }
-
-              }
-
-
-              // Costco
-              $costFile = file("txtDB/costco.txt");
-              $costTime;
-              if($costFile) {
-                switch ($day) {
-                  case 'Sun':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $costFile[5])[1])[0];
-                    $endTime = explode('–', explode(" ", $costFile[5])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $costTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $costTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Mon':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $costFile[6])[1])[0];
-                    $endTime = explode('–', explode(" ", $costFile[6])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $costTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $costTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Tue':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $costFile[7])[1])[0];
-                    $endTime = explode('–', explode(" ", $costFile[7])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $costTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $costTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Wed':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $costFile[8])[1])[0];
-                    $endTime = explode('–', explode(" ", $costFile[8])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $costTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $costTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Thu':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $costFile[9])[1])[0];
-                    $endTime = explode('–', explode(" ", $costFile[9])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $costTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $costTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Fri':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $costFile[10])[1])[0];
-                    $endTime = explode('–', explode(" ", $costFile[10])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $costTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $costTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-
-                  case 'Sat':
-                    // Getting start and end time and formate them
-                    $startingTime = explode('–', explode(" ", $costFile[11])[1])[0];
-                    $endTime = explode('–', explode(" ", $costFile[11])[1])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $costTime = $startingTime. " to ". $endTime. "(OPEN)";
-                    } else {
-                      $costTime = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
-                }
-
-              }
+              // Close db connection
+              mysqli_close($con);
             ?>
-
-            <div class="store">
-
-              <i class="far fa-star favSelect"></i>
-              <img class="store_img" src="src/Costco.png">
-              <h2>Costco <br> ($1:5 points) </h2>
-
-              <div class="storeSection">
-                <i class="fas fa-clock storeIcon"></i>
-                <p class="storeText"> <?php echo $costTime ?> </p>
-              </div>
-
-              <div class="storeSection">
-                <i class="fas fa-shopping-basket storeIcon"></i>
-                <p class="storeText">Grocery Store</p>
-              </div>
-
-              <div class="storeSection">
-                <i class="fas fa-dollar-sign storeIcon"></i>
-                <p class="storeText">$60/120</p>
-              </div>
-
-              <div class="storeSection">
-                <i class="far fa-smile storeIcon"></i>
-                <p class="storeText">82% Satisfactory Score</p>
-              </div>
-
-              <a class="storeMoreBtn" href="storeDetail.php?name=costco">More</a>
-
-            </div>
-
-            <!-- Food with bad satisfactory-->
-            <div class="store">
-
-              <i class="far fa-star favSelect"></i>
-              <img class="store_img" src="src/McDonald's.png">
-              <h2>McDonald's <br> ($1:2 points) </h2>
-
-              <div class="storeSection">
-                <i class="fas fa-clock storeIcon"></i>
-                <p class="storeText"><?php echo $mcTime; ?></p>
-              </div>
-
-              <div class="storeSection">
-                <i class="fas fa-utensils storeIcon"></i>
-                <p class="storeText">Restuarant</p>
-              </div>
-
-              <div class="storeSection">
-                <i class="fas fa-dollar-sign storeIcon"></i>
-                <p class="storeText">$25 per person</p>
-              </div>
-
-              <div class="storeSection">
-
-                <i class="far fa-frown-open storeIcon"></i>
-                <p class="storeText">46% Satisfactory Score</p>
-              </div>
-
-              <a class="storeMoreBtn" href="storeDetail.php?name=mcdonal">More</a>
-
-            </div>
-
-            <!-- Activity with good satisfactory-->
-            <div class="store">
-
-              <i class="far fa-star favSelect"></i>
-              <img class="store_img" src="src/Guildford Recreation Centre.png">
-              <h2>Guildford Recreation Center <br> ($1:2.5 points) </h2>
-
-              <div class="storeSection">
-                <i class="fas fa-clock storeIcon"></i>
-                <p class="storeText"> <?php echo $gfrcTime; ?> </p>
-              </div>
-
-              <div class="storeSection">
-                <i class="fas fa-cloud-sun storeIcon"></i>
-                <p class="storeText">Activity</p>
-              </div>
-
-              <div class="storeSection">
-                <i class="fas fa-dollar-sign storeIcon"></i>
-                <p class="storeText">$7.25 per person</p>
-              </div>
-
-              <div class="storeSection">
-                <i class="far fa-smile storeIcon"></i>
-                <p class="storeText">76% Satisfactory Score</p>
-              </div>
-
-              <a class="storeMoreBtn" href="storeDetail.php?name=guildfordRecCenter">More</a>
-
-            </div>
-
-            <!-- Restuarant with okay satisfactory-->
-            <div class="store">
-
-              <i class="far fa-star favSelect"></i>
-              <img class="store_img" src="src/Subway.png">
-              <h2>Subway <br> ($1:2 points) </h2>
-
-              <div class="storeSection">
-                <i class="fas fa-clock storeIcon"></i>
-                <p class="storeText"> <?php echo $subwayTime; ?> </p>
-              </div>
-
-              <div class="storeSection">
-                <i class="fas fa-utensils storeIcon"></i>
-                <p class="storeText">Restuarant</p>
-              </div>
-
-              <div class="storeSection">
-                <i class="fas fa-dollar-sign storeIcon"></i>
-                <p class="storeText">$25 per person</p>
-              </div>
-
-              <div class="storeSection">
-                <i class="far fa-meh storeIcon"></i>
-                <p class="storeText">62% Satisfactory Score</p>
-              </div>
-
-              <a class="storeMoreBtn" href="storeDetail.php?name=subway">More</a>
-
-            </div>
-
 
           </div>
 

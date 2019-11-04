@@ -27,3 +27,13 @@ h1, h2, h3 {
 button {
   outline: none;
 }
+
+.submitBtn {
+  padding-top: .4rem;
+  background-color: transparent;
+  display: block;
+  margin: auto;
+
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}

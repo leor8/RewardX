@@ -10,7 +10,7 @@ h1 {
   width: 300px;
   border: 1px solid lightgrey;
   /*background-color: darkblue;*/
-  height: 550px;
+  height: 600px;
   margin-top: -4rem;
 
   display: inline-block;
@@ -30,7 +30,9 @@ h1 {
   margin-left: 1rem;
   outline: none;
   border: none;
-  border-bottom: 1px solid lightgrey
+  border-bottom: 1px solid lightgrey;
+
+  width: 170px;
 }
 
 .searchBtn {

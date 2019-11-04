@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+if (isset($_SESSION['currUser'])) { // if user is logged in
+  echo "<script type='text/javascript'>alert('You are Logged in, redirecting to Dashboard.');</script>";
+  header('Location: dashboard.php?id='.$_SESSION['currUser']);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -66,8 +76,8 @@
 
             <form method="post" action="account_action.php">
               <div class="formItem">
-                <label for="username">Username: </label>
-                <input type="text" placeholder="Enter Username" name="username" required>
+                <label for="email">Email: </label>
+                <input type="text" placeholder="Enter email" name="email" required>
 
                 <label for="password">Password: </label>
                 <input type="password" placeholder="Enter Password" name="password" required>
@@ -97,3 +107,24 @@
 
     </body>
 </html>
+
+
+
+<?php
+if(isset($_GET["failed"]) == 1) {
+  echo "<script type='text/javascript'>alert('Your email or password is incorrect, please try again.');</script>";
+}
+// if(isset($_GET["failed"]) == 2) {
+//   echo "<script type='text/javascript'>alert('There is an error creating your account, please try again later.');</script>";
+// }
+?>
+
+
+
+
+
+
+
+
+
+

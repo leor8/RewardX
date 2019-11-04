@@ -8,6 +8,7 @@
 
         <link rel="stylesheet" type="text/css" href="css/normalize.css">
         <link rel="stylesheet" type="text/css" href="css/store.css">
+
         <link rel="stylesheet" type="text/css" href="css/nav.css">
         <link rel="stylesheet" type="text/css" href="css/footer.css">
         <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -23,6 +24,7 @@
         <script type="text/javascript" src="js/nav.js"></script>
         <script src="https://kit.fontawesome.com/c44e3d0e87.js"></script>
     </head>
+
     <body>
 
       <!-- Headers  -->
@@ -51,399 +53,333 @@
 
       </header>
 
+
+      <main>
+
       <!-- Getting URL Query and text file containing the information -->
       <?php
-        $file = fopen("txtDB/".$_GET['name'].".txt", "r");
-        $counter = 0;
+         // Getting default db varialbe
+        require 'DBinfo.php';
 
-        $name; $type; $des; $rating; $address; $time; $url; $price;
+        // Opening a db connection
+        $con = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
-        if($file) {
+        $name; $type; $des; $rating; $address; $time; $url; $price; $srcLink;
 
-          while (! feof($file)) {
-            // echo $file;
-            switch ($counter) {
-              case 0:
-                $name = fgets($file);
-                break;
-              case 1:
-                $type = fgets($file);
-                break;
-              case 2:
-                $des = fgets($file);
-                break;
-              case 3:
-                $rating = fgets($file);
-                break;
-              case 4:
-                $address = fgets($file);
-                break;
-              case 5:
-                $time = fgets($file). "<br>";
-                break;
-              case 6:
-                $time .= fgets($file). "<br>";
-                break;
-              case 7:
-                $time .= fgets($file). "<br>";
-                break;
-              case 8:
-                $time .= fgets($file). "<br>";
-                break;
-              case 9:
-                $time .= fgets($file). "<br>";
-                break;
-              case 10:
-                $time .= fgets($file). "<br>";
-                break;
-              case 11:
-                $time .= fgets($file);
-                break;
-              case 12:
-                $url = fgets($file);
-                break;
-              case 13:
-                $price = fgets($file);
-                break;
-              default:
+        $gettingQuery = "SELECT * FROM Store WHERE StoreId = ". $_GET["id"];
 
-                break;
-            }
-            $counter++;
-          }
+        // get results
+        $storeResult = mysqli_query($con, $gettingQuery);
 
+        // If query failed, end the program
+        if (!$storeResult) {
+          die("Database query failed.");
         }
-        fclose($file);
 
-        // echo $name;
-        // echo $type;
-        // echo $des;
-        // echo $rating;
-        // echo $address;
-        // echo $time;
-        // echo $url;
-        // echo $price;
+        while ($row = mysqli_fetch_assoc($storeResult)) {
+          $name = $row["StoreName"];
+          $type = $row["StoreType"];
+          $des = $row["StoreDes"];
+          $rating = $row["StoreRatings"];
+          $address = $row["StoreAddress"];
+          $time = $row["StoreHours"];
+          $url = $row["StoreLink"];
+          $price = $row["StorePriceAverage"];
+          $srcLink = $row["StoreImage"];
+        }
 
-        // Building the page compenents.s
+        // Free the results
+        mysqli_free_result($storeResult);
+
       ?>
 
-      <!-- The main content of index page -->
-      <main>
-        <!-- Name of the store (Added dynamically) -->
-        <h1><?php echo $name ?>
-        <?php
-          if($type == "Food\n") {
-            echo "<i class=\"fas fa-utensils storeIcon\"></i>";
-          } else if ($type == "Shop\n") {
-            echo "<i class=\"fas fa-shopping-basket storeIcon\" aria-hidden=\"true\"></i>";
-          } else {
-            echo "<i class=\"fas fa-cloud-sun storeIcon\" aria-hidden=\"true\"></i>";
-          }
+      <!-- Name of the store (Added dynamically) -->
+      <h1><?php echo $name ?>
+      <?php
+        if($type == "Food") {
+          echo "<i class=\"fas fa-utensils storeIcon\"></i>";
+        } else if ($type == "Shop") {
+          echo "<i class=\"fas fa-shopping-basket storeIcon\" aria-hidden=\"true\"></i>";
+        } else {
+          echo "<i class=\"fas fa-cloud-sun storeIcon\" aria-hidden=\"true\"></i>";
+        }
 
-        ?>
-        <span class="score">
+      ?>
+
+      <span class="score">
           <?php echo $rating?> Satisfaction Score
         <i class="far fa-star favSelect"></i> </span></h1>
 
-        <p class="storeDes"> <?php echo $des?> </p>
+      <p class="storeDes"> <?php echo $des?> </p>
 
-        <section class="storeSec">
-          <!-- Images on the side -->
-           <div class="imgs">
-            <?php
-              echo "
-                <img src=\"src/". $name .".png\" class=\"storeImg\">
-                <img src=\"src/". $name ."2.png\" class=\"storeImg\">
-                <img src=\"src/". $name ."3.png\" class=\"storeImg\">
-              "
-            ?>
-          </div>
+      <section class="storeSec">
+        <!-- Images on the side -->
+         <div class="imgs">
+          <?php
 
-           <!-- Store information -->
+            echo "
+              <img src=\"". $srcLink. "/1.png\" class=\"storeImg\">
+              <img src=\"". $srcLink. "/2.png\" class=\"storeImg\">
+              <img src=\"". $srcLink. "/3.png\" class=\"storeImg\">
+            "
+          ?>
+        </div>
+
+        <!-- Store information -->
           <div class="storeInfo">
 
-          <!-- Each section contains a different piece of information -->
-          <div class="eachSection">
-            <i class="fas fa-map-marker-alt mapIcon"></i>
-            <p class="storeInfoText"> <?php echo $address ?></p>
-          </div>
+            <!-- Each section contains a different piece of information -->
+            <div class="eachSection">
+              <i class="fas fa-map-marker-alt mapIcon"></i>
+              <p class="storeInfoText"> <?php echo $address ?></p>
+            </div>
 
-          <div class="eachSection">
-            <i class="fas fa-clock mapIcon" style="margin-left: 1.6rem;"></i>
-            <?php
-              date_default_timezone_set('America/Vancouver');
-              $day = date('D', time());
-              $currTime = date('h:i a', time());
+            <div class="eachSection">
+              <i class="fas fa-clock mapIcon" style="margin-left: 1.6rem;"></i>
+              <p class="storeInfoText">
+                <?php
+                  date_default_timezone_set('America/Vancouver');
+                  $day = date('D', time());
 
-              $timeArr = explode("<br>", $time);
+                  $timeArr = explode(" ", $time);
 
-              switch ($day) {
-                case 'Sun':
-                  // Getting sunday's opening time
-                  $startingTime = explode('–', explode(" ", $timeArr[0])[1])[0];
-                  $endTime = explode('–', explode(" ", $timeArr[0])[1])[1];
+                  for($index = 0; $index < count($timeArr); $index++) {
+                    $timeArr[$index] = str_replace("_", "-" , $timeArr[$index]);
+                    if($index == 0) {
+                      $timeArr[$index] = "Sunday ". $timeArr[$index];
+                    } else if ($index == 1) {
+                      $timeArr[$index] = "Monday ". $timeArr[$index];
+                    } else if ($index == 2) {
+                      $timeArr[$index] = "Tuesday ". $timeArr[$index];
+                    } else if ($index == 3) {
+                      $timeArr[$index] = "Wednesday ". $timeArr[$index];
+                    } else if ($index == 4) {
+                      $timeArr[$index] = "Thursday ". $timeArr[$index];
+                    } else if ($index == 5) {
+                      $timeArr[$index] = "Friday ". $timeArr[$index];
+                    } else if ($index == 6) {
+                      $timeArr[$index] = "Saturday ". $timeArr[$index];
+                    }
 
-                  // Converting time to a formate that is decodeable by strtotime
-                  $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                  $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
 
-                  // Compare to see if the store is open
-                  if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                    echo "
-                      <p class=\"storeInfoText\">
-                      <span style=\"color: green\">". $timeArr[0]. "(Open)<br/></span>".
-                      $timeArr[1]."<br>".
-                      $timeArr[2]."<br>".
-                      $timeArr[3]."<br>".
-                      $timeArr[4]."<br>".
-                      $timeArr[5]."<br>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
-                  } else {
-                    echo "
-                      <p class=\"storeInfoText\">
-                      <span style=\"color: red\">". $timeArr[0]. "(Closed)<br/></span>".
-                      $timeArr[1]."<br>".
-                      $timeArr[2]."<br>".
-                      $timeArr[3]."<br>".
-                      $timeArr[4]."<br>".
-                      $timeArr[5]."<br>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
                   }
-                  break;
 
-                case 'Mon':
-                  // Getting sunday's opening time
-                  $startingTime = explode('–', explode(" ", $timeArr[0])[1])[0];
-                  $endTime = explode('–', explode(" ", $timeArr[0])[1])[1];
+                  switch ($day) {
+                    case 'Sun':
+                      # code...
+                      if($_GET["open"] == 1) {
+                        echo "
+                          <p class=\"storeInfoText\">
+                          <span style=\"color: green\">". $timeArr[0]. "(Open)<br/></span>".
+                          $timeArr[1]."<br>".
+                          $timeArr[2]."<br>".
+                          $timeArr[3]."<br>".
+                          $timeArr[4]."<br>".
+                          $timeArr[5]."<br>".
+                          $timeArr[6].
+                          "</p>"
+                        ;
+                      } else {
+                        echo "
+                          <p class=\"storeInfoText\">
+                          <span style=\"color: red\">". $timeArr[0]. "(Closed)<br/></span>".
+                          $timeArr[1]."<br>".
+                          $timeArr[2]."<br>".
+                          $timeArr[3]."<br>".
+                          $timeArr[4]."<br>".
+                          $timeArr[5]."<br>".
+                          $timeArr[6].
+                          "</p>"
+                        ;
+                      }
 
-                  // Converting time to a formate that is decodeable by strtotime
-                  $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                  $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
+                      break;
 
-                  // Compare to see if the store is open
-                  if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      "<span style=\"color: green\">". $timeArr[1]. "(Open)<br/></span>".
-                      $timeArr[2]."<br>".
-                      $timeArr[3]."<br>".
-                      $timeArr[4]."<br>".
-                      $timeArr[5]."<br>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
-                  } else {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      "<span style=\"color: red\">". $timeArr[1]. "(Closed)<br/></span>".
-                      $timeArr[2]."<br>".
-                      $timeArr[3]."<br>".
-                      $timeArr[4]."<br>".
-                      $timeArr[5]."<br>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
+                      case 'Mon':
+                        # code...
+                        if($_GET["open"] == 1) {
+                          echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            "<span style=\"color: green\">". $timeArr[1]. "(Open)<br/></span>".
+                            $timeArr[2]."<br>".
+                            $timeArr[3]."<br>".
+                            $timeArr[4]."<br>".
+                            $timeArr[5]."<br>".
+                            $timeArr[6].
+                            "</p>"
+                          ;
+                        } else {
+                          echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            "<span style=\"color: red\">". $timeArr[1]. "(Closed)<br/></span>".
+                            $timeArr[2]."<br>".
+                            $timeArr[3]."<br>".
+                            $timeArr[4]."<br>".
+                            $timeArr[5]."<br>".
+                            $timeArr[6].
+                            "</p>"
+                          ;
+                        }
+
+                        break;
+
+                      case 'Tue':
+                        # code...
+                        if($_GET["open"] == 1) {
+                          echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            $timeArr[1]."<br>".
+                            "<span style=\"color: green\">". $timeArr[2]. "(Open)<br/></span>".
+                            $timeArr[3]."<br>".
+                            $timeArr[4]."<br>".
+                            $timeArr[5]."<br>".
+                            $timeArr[6].
+                            "</p>"
+                          ;
+                        } else {
+                          echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            $timeArr[1]."<br>".
+                            "<span style=\"color: red\">". $timeArr[2]. "(Closed)<br/></span>".
+                            $timeArr[3]."<br>".
+                            $timeArr[4]."<br>".
+                            $timeArr[5]."<br>".
+                            $timeArr[6].
+                            "</p>"
+                          ;
+                        }
+
+                        break;
+
+                      case 'Wed':
+                        # code...
+                        if($_GET["open"] == 1) {
+                          echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            $timeArr[1]."<br>".
+                            $timeArr[2]."<br>".
+                            "<span style=\"color: green\">". $timeArr[3]. "(Open)<br/></span>".
+                            $timeArr[4]."<br>".
+                            $timeArr[5]."<br>".
+                            $timeArr[6].
+                            "</p>"
+                          ;
+                        } else {
+                           echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            $timeArr[1]."<br>".
+                            $timeArr[2]."<br>".
+                            "<span style=\"color: red\">". $timeArr[3]. "(Closed)<br/></span>".
+                            $timeArr[4]."<br>".
+                            $timeArr[5]."<br>".
+                            $timeArr[6].
+                            "</p>"
+                          ;
+                        }
+
+                        break;
+
+                      case 'Thu':
+                        # code...
+                        if($_GET["open"] == 1) {
+                          echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            $timeArr[1]."<br>".
+                            $timeArr[2]."<br>".
+                            $timeArr[3]."<br>".
+                            "<span style=\"color: green\">". $timeArr[4]. "(Open)<br/></span>".
+                            $timeArr[5]."<br>".
+                            $timeArr[6].
+                            "</p>"
+                          ;
+                        } else {
+                           echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            $timeArr[1]."<br>".
+                            $timeArr[2]."<br>".
+                            $timeArr[3]."<br>".
+                            "<span style=\"color: red\">". $timeArr[4]. "(Closed)<br/></span>".
+                            $timeArr[5]."<br>".
+                            $timeArr[6].
+                            "</p>"
+                          ;
+                        }
+
+                        break;
+
+                      case 'Fri':
+                        # code...
+                        if($_GET["open"] == 1) {
+                          echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            $timeArr[1]."<br>".
+                            $timeArr[2]."<br>".
+                            $timeArr[3]."<br>".
+                            $timeArr[4]."<br>".
+                            "<span style=\"color: green\">". $timeArr[5]. "(Open)<br/></span>".
+                            $timeArr[6].
+                            "</p>"
+                          ;
+                        } else {
+                           echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            $timeArr[1]."<br>".
+                            $timeArr[2]."<br>".
+                            $timeArr[3]."<br>".
+                            $timeArr[4]."<br>".
+                            "<span style=\"color: red\">". $timeArr[5]. "(Closed)<br/></span>".
+                            $timeArr[6].
+                            "</p>"
+                          ;
+                        }
+
+                        break;
+
+                      case 'Sat':
+                        # code...
+                        if($_GET["open"] == 1) {
+                          echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            $timeArr[1]."<br>".
+                            $timeArr[2]."<br>".
+                            $timeArr[3]."<br>".
+                            $timeArr[4]."<br>".
+                            $timeArr[5]."<br>".
+                            "<span style=\"color: green\">". $timeArr[6]. "(Open)</span>".
+                            "</p>"
+                          ;
+                        } else {
+                           echo "
+                            <p class=\"storeInfoText\">".
+                            $timeArr[0]."<br>".
+                            $timeArr[1]."<br>".
+                            $timeArr[2]."<br>".
+                            $timeArr[3]."<br>".
+                            $timeArr[4]."<br>".
+                            $timeArr[5]."<br>".
+                            "<span style=\"color: red\">". $timeArr[6]. "(Open)</span>".
+                            "</p>"
+                          ;
+                        }
+
                   }
-                  break;
-
-                case 'Tue':
-                  // Getting sunday's opening time
-                  $startingTime = explode('–', explode(" ", $timeArr[0])[1])[0];
-                  $endTime = explode('–', explode(" ", $timeArr[0])[1])[1];
-
-                  // Converting time to a formate that is decodeable by strtotime
-                  $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                  $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                  // Compare to see if the store is open
-                  if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      $timeArr[1]."<br>".
-                      "<span style=\"color: green\">". $timeArr[2]. "(Open)<br/></span>".
-                      $timeArr[3]."<br>".
-                      $timeArr[4]."<br>".
-                      $timeArr[5]."<br>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
-                  } else {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      $timeArr[1]."<br>".
-                      "<span style=\"color: red\">". $timeArr[2]. "(Closed)<br/></span>".
-                      $timeArr[3]."<br>".
-                      $timeArr[4]."<br>".
-                      $timeArr[5]."<br>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
-                  }
-                  break;
-
-                case 'Wed':
-                  // Getting sunday's opening time
-                  $startingTime = explode('–', explode(" ", $timeArr[0])[1])[0];
-                  $endTime = explode('–', explode(" ", $timeArr[0])[1])[1];
-
-                  // Converting time to a formate that is decodeable by strtotime
-                  $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                  $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                  // Compare to see if the store is open
-                  if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      $timeArr[1]."<br>".
-                      $timeArr[2]."<br>".
-                      "<span style=\"color: green\">". $timeArr[3]. "(Open)<br/></span>".
-                      $timeArr[4]."<br>".
-                      $timeArr[5]."<br>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
-                  } else {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      $timeArr[1]."<br>".
-                      $timeArr[2]."<br>".
-                      "<span style=\"color: red\">". $timeArr[3]. "(Closed)<br/></span>".
-                      $timeArr[4]."<br>".
-                      $timeArr[5]."<br>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
-                  }
-                  break;
-
-                case 'Thu':
-                  // Getting sunday's opening time
-                  $startingTime = explode('–', explode(" ", $timeArr[0])[1])[0];
-                  $endTime = explode('–', explode(" ", $timeArr[0])[1])[1];
-
-                  // Converting time to a formate that is decodeable by strtotime
-                  $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                  $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                  // Compare to see if the store is open
-                  if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      $timeArr[1]."<br>".
-                      $timeArr[2]."<br>".
-                      $timeArr[3]."<br>".
-                      "<span style=\"color: green\">". $timeArr[4]. "(Open)<br/></span>".
-                      $timeArr[5]."<br>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
-                  } else {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      $timeArr[1]."<br>".
-                      $timeArr[2]."<br>".
-                      $timeArr[3]."<br>".
-                      "<span style=\"color: red\">". $timeArr[4]. "(Closed)<br/></span>".
-                      $timeArr[5]."<br>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
-                  }
-                  break;
-
-                case 'Fri':
-                  // Getting sunday's opening time
-                  $startingTime = explode('–', explode(" ", $timeArr[0])[1])[0];
-                  $endTime = explode('–', explode(" ", $timeArr[0])[1])[1];
-
-                  // Converting time to a formate that is decodeable by strtotime
-                  $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                  $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                  // Compare to see if the store is open
-                  if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      $timeArr[1]."<br>".
-                      $timeArr[2]."<br>".
-                      $timeArr[3]."<br>".
-                      $timeArr[4]."<br>".
-                      "<span style=\"color: green\">". $timeArr[5]. "(Open)<br/></span>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
-                  } else {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      $timeArr[1]."<br>".
-                      $timeArr[2]."<br>".
-                      $timeArr[3]."<br>".
-                      $timeArr[4]."<br>".
-                      "<span style=\"color: red\">". $timeArr[5]. "(Closed)<br/></span>".
-                      $timeArr[6].
-                      "</p>"
-                    ;
-                  }
-                  break;
-
-                  case 'Sat':
-                  // Getting sunday's opening time
-                  $startingTime = explode('–', explode(" ", $timeArr[0])[1])[0];
-                  $endTime = explode('–', explode(" ", $timeArr[0])[1])[1];
-
-                  // Converting time to a formate that is decodeable by strtotime
-                  $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                  $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                  // Compare to see if the store is open
-                  if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      $timeArr[1]."<br>".
-                      $timeArr[2]."<br>".
-                      $timeArr[3]."<br>".
-                      $timeArr[4]."<br>".
-                      $timeArr[5]."<br>".
-                      "<span style=\"color: green\">". $timeArr[6]. "(Open)<br/></span>".
-                      "</p>"
-                    ;
-                  } else {
-                    echo "
-                      <p class=\"storeInfoText\">".
-                      $timeArr[0]."<br>".
-                      $timeArr[1]."<br>".
-                      $timeArr[2]."<br>".
-                      $timeArr[3]."<br>".
-                      $timeArr[4]."<br>".
-                      $timeArr[5]."<br>".
-                      "<span style=\"color: red\">". $timeArr[6]. "(Closed)<br/></span>".
-                      "</p>"
-                    ;
-                  }
-                  break;
 
 
-                default:
-                  # code...
-                  break;
-              }
+                ?>
 
-            ?>
+
+              </p>
           </div>
 
           <div class="eachSection">
@@ -456,10 +392,11 @@
 
           <div class="eachSection">
             <i class="fas fa-dollar-sign mapIcon" style="margin-left: 2.6rem; margin-right: 0.7rem;"></i>
-            <p class="storeInfoText"> <?php echo $price; ?> </p>
+            <p class="storeInfoText"> <?php echo $price; ?> / Person</p>
           </div>
 
-          <div class="eachSection">
+          <!-- The followings are for comments -->
+           <div class="eachSection">
               <form>
                 <h2>Leave a review</h2>
                 <div>
@@ -469,13 +406,47 @@
 
                 <textarea></textarea>
 
+                <button class="submitBtn" type="submit">Submit Review </button>
+
               </form>
             </div>
 
             <div class="eachSection" style="margin-top: 2rem;">
               <h2>Reviews</h2>
+
+              <!-- TODO: The comment should be loaded from a comment sql table (Needs to be created) -->
               <!-- The following comments are retrieved from google reviews AS A PLACEHOLDER to show the visuals-->
-              <div class="eachComment">
+
+              <?php
+                $commentQuery = "SELECT * FROM Comments WHERE BelongStore = ". $_GET["id"];
+
+                $commentResults = mysqli_query($con, $commentQuery);
+
+                // If query failed, end the program
+                if (!$commentResults) {
+                  die("Database query failed.");
+                }
+
+                if(mysqli_num_rows($commentResults) == 0) {
+                  echo "<p>Be the first one to comment!</p>";
+                }
+                while ($row = mysqli_fetch_assoc($commentResults)) {
+                  echo "
+                  <div class=\"eachComment\">
+                    <img src=\"https://api.adorable.io/avatars/285/". $row["UserName"].".png\" class=\"commentIcon\">
+                    <div class=\"commentName\">
+                      <h3>". $row["UserName"]. "</h3>
+                      <p class=\"commentPoints\">". $row["UserRating"]." Score</p>
+                    </div>
+
+                    <p class=\"reviewDetail\">". $row["UserComment"]."</p>
+
+                  </div>
+                  ";
+                }
+              ?>
+
+              <!-- <div class="eachComment">
                 <img src="https://api.adorable.io/avatars/285/Jan.png" class="commentIcon">
                 <div class="commentName">
                   <h3>Baljeet Kaur</h3>
@@ -501,12 +472,13 @@
 
             </div>
 
-          </div>
-        </section>
+          </div> -->
+      </section>
 
-        <a class="returnBtn" href="partners.php">
-          <i class="fas fa-arrow-left"></i>
-        </a>
+      <a class="returnBtn" href="partners.php">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+
       </main>
 
       <!-- The following section is footer -->
@@ -517,7 +489,11 @@
     </body>
 </html>
 
+<?php
 
+// Close Connection
+mysqli_close($con);
+?>
 
 
 

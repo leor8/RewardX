@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+if (isset($_SESSION['currUser'])) { // if user is logged in
+  echo "<script type='text/javascript'>alert('You are Logged in, redirecting to Dashboard.');</script>";
+  header('Location: dashboard.php?id='.$_SESSION['currUser']);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -66,7 +76,8 @@
             <form action="account_action.php" method="post" >
               <div class="formItem">
                 <label for="email">Your Email: </label>
-                <input type="text" placeholder="Enter Email" name="email" required>
+                <!-- Regular expression retrieved from http://regexlib.com/REDetails.aspx?regexp_id=16 -->
+                <input type="text" placeholder="Enter Email" name="email" pattern="^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$" oninvalid="setCustomValidity('Please enter a valid email address')" required>
 
                 <label for="username">Username: </label>
                 <input type="text" placeholder="Enter Username" name="username" required>
@@ -96,3 +107,21 @@
 
     </body>
 </html>
+
+<?php
+if(isset($_GET["failed"]) == 1) {
+  echo "<script type='text/javascript'>alert('Your emailed entered already exits, please login or enter a different email.');</script>";
+}
+if(isset($_GET["failed"]) == 2) {
+  echo "<script type='text/javascript'>alert('There is an error creating your account, please try again later.');</script>";
+}
+?>
+
+
+
+
+
+
+
+
+
