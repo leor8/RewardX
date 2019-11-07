@@ -53,6 +53,9 @@ h1, h2 {
   display: block;
   margin: auto;
   margin-bottom: 1rem;
+  width: 75px;
+
+  text-align: center;
 
   border: 2px solid lightgrey;
   padding: 0.5rem;
@@ -125,6 +128,7 @@ h1, h2 {
 .logout {
   margin: auto;
   display: block;
+  width: 52px;
   margin-top: 1rem;
   margin-bottom: 1rem;
   padding: .5rem;

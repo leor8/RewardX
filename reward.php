@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -44,47 +48,85 @@
           <!-- Account dropdown -->
           <div class="dropdown-content">
             <a href="dashboard.php">Dashboard</a>
-            <a href="login.php">Login</a>
-            <a href="register.php">Register</a>
+            <?php
+              if (isset($_SESSION['currUser'])) {
+                echo "<a href=\"logout.php\">Logout</a>";
+              } else {
+                echo "
+                <a href=\"login.php\">Login</a>
+                <a href=\"register.php\">Register</a>
+                ";
+              }
+            ?>
           </div>
         </nav>
 
       </header>
 
       <!-- The main content of the page -->
-      <h1>Redeem Reward: (Your points 260)</h1>
-      <main>
-        <div class="item">
-          <img src="src/iphone.png" class="itemImg">
-          <p class="itemHeading">Iphone 11</p>
-          <p class="itemText">The newest Iphone for free</p>
-          <button class="itemBtn">Redeem: 200000pt </button>
-        </div>
+      <h1>Redeem Reward
+      <?php
+      // Getting user point counts
+      // Getting default db varialbe
+      require 'DBinfo.php';
 
-        <div class="item">
-          <img src="src/amazon.png" class="itemImg">
-          <p class="itemHeading">Amazon Gift Card</p>
-          <p class="itemText">A $25 amazon gift card</p>
-          <button class="itemBtn">Redeem: 1000pt </button>
-        </div>
-        <div class="item">
-          <img src="src/mug.png" class="itemImg">
-          <p class="itemHeading">White Mug</p>
-          <p class="itemText">A white mug that you can engrave anything on for free</p>
-          <button class="itemBtn">Redeem: 500pt </button>
-        </div>
-        <div class="item">
-          <img src="src/googleCardboard.png" class="itemImg">
-          <p class="itemHeading">Google Cardboard</p>
-          <p class="itemText">An easy to setup VR device</p>
-          <button class="itemBtn">Redeem: 1200pt </button>
-        </div>
-        <div class="item">
-          <img src="src/ac.png" class="itemImg">
-          <p class="itemHeading">Portable AC</p>
-          <p class="itemText">Easy to install portable air conditioner</p>
-          <button class="itemBtn">Redeem: 30000pt </button>
-        </div>
+      // Opening a db connection
+      $con = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+
+      if(isset($_SESSION["currUser"])) {
+        // Getting user favorites
+
+        $pointsCount = "SELECT * FROM Users WHERE UserId = ". $_SESSION["currUser"];
+        $pointsCountResults = mysqli_query($con, $pointsCount);
+
+        if(!$pointsCountResults) {
+          die("Database query failed.");
+        }
+
+        $points;
+
+        while($row = mysqli_fetch_assoc($pointsCountResults)) {
+          $points = $row["StorePoints"];
+        }
+
+        mysqli_free_result($pointsCountResults);
+
+        echo "(Your points: ". $points. ")";
+      }
+
+
+
+      ?>
+
+      </h1>
+      <main>
+
+        <?php
+          // Loading all the rewards dynamically.
+          $rewardsQuery = "SELECT * FROM Rewards WHERE RewardQuantityLeft > 0";
+
+          $allRewardsAvailble = mysqli_query($con, $rewardsQuery);
+
+          if(!$allRewardsAvailble) {
+            die("Database query failed.");
+          }
+
+          while($row = mysqli_fetch_assoc($allRewardsAvailble)) {
+            echo "
+              <div class=\"item\">
+                <img src=\"". $row["RewardImage"]."\" class=\"itemImg\">
+                <p class=\"itemHeading\">". $row["RewardName"]."</p>
+                <p class=\"itemText\">". $row["RewardDescription"]. " <br/><strong>(". $row["RewardQuantityLeft"]." Left)</strong></p>
+                <a class=\"itemBtn\" href=\"redeemReward.php?productId=". $row["RewardId"]."\">Redeem: ". $row["RewardPoints"]."pt </a>
+              </div>
+            ";
+          }
+
+          mysqli_free_result($allRewardsAvailble);
+
+          mysqli_close($con);
+
+        ?>
       </main>
 
       <!-- The following section is footer -->
@@ -95,3 +137,19 @@
 
     </body>
 </html>
+
+
+
+
+<?php
+
+if(isset($_GET["failed"])) {
+  if($_GET["failed"] == 1) {
+    echo "<script type='text/javascript'>alert('You do not have enough points to redeem the item.');</script>";
+  } else {
+    echo "<script type='text/javascript'>alert('You are not logged in.');</script>";
+  }
+
+}
+
+?>

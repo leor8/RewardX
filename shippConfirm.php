@@ -1,10 +1,82 @@
 <?php
-session_start();
+  session_start();
 
-echo $_SESSION['currUser'];
-if (isset($_SESSION['currUser'])) { // if user is logged in
-  echo "<script type='text/javascript'>alert('You are Logged in, redirecting to Dashboard.');</script>";
-  header('Location: dashboard.php?id='.$_SESSION['currUser']);
+
+  // Getting default db varialbe
+  require 'DBinfo.php';
+
+  // Opening a db connection
+  $con = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+
+  // Getting user favorites
+
+  // Getting default db varialbe
+  require 'DBinfo.php';
+
+  // Opening a db connection
+  $con = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+
+  // Getting user favorites
+
+  $pointsCount = "SELECT * FROM Users WHERE UserId = ". $_SESSION["currUser"];
+  $pointsCountResults = mysqli_query($con, $pointsCount);
+
+  if(!$pointsCountResults) {
+    die("Database query failed.");
+  }
+
+  $UserpointsLeft;
+
+  while($row = mysqli_fetch_assoc($pointsCountResults)) {
+    $UserpointsLeft = $row["StorePoints"];
+  }
+
+  mysqli_free_result($pointsCountResults);
+
+  // Getting product cost
+  // Loading all the rewards dynamically.
+  $rewardsQuery = "SELECT * FROM Rewards WHERE RewardId = ". $_GET["productId"];
+
+  $rewardCost = mysqli_query($con, $rewardsQuery);
+
+  if(!$rewardCost) {
+    die("Database query failed.");
+  }
+
+  $cost;
+
+  while($row = mysqli_fetch_assoc($rewardCost)) {
+    $cost = $row["RewardPoints"];
+  }
+
+  mysqli_free_result($rewardCost);
+
+  if($UserpointsLeft > $cost) {
+    // header('Location: shippingInformation.php?productId='. $_GET["productId"]);
+  } else {
+    echo "<script type='text/javascript'>alert('You do not have enough points to redeem this item.');</script>";
+    header('Location: reward.php?failed=1');
+  }
+
+
+
+
+      // header('Location: storeDetail.php?id='. $_GET["favId"].'&open='. $_GET["open"]);
+      // mysqli_close($con);
+      // header('Location: partners.php');
+
+?>
+
+
+
+
+
+
+
+<?php
+if (!isset($_SESSION['currUser'])) { // if user is logged in
+  echo "<script type='text/javascript'>alert('You are not logged in, redirecting to Dashboard.');</script>";
+  header('Location: login.php');
 }
 
 ?>
@@ -23,8 +95,8 @@ if (isset($_SESSION['currUser'])) { // if user is logged in
         <link rel="stylesheet" type="text/css" href="css/main.css">
 
         <!-- Page specific css -->
-        <link rel="stylesheet" type="text/css" href="css/login.css">
         <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" type="text/css" href="css/login.css">
 
         <!-- External links -->
         <link href="https://fonts.googleapis.com/css?family=Manjari:400,700&display=swap" rel="stylesheet">
@@ -75,38 +147,20 @@ if (isset($_SESSION['currUser'])) { // if user is logged in
 
       <!-- The main content of index page -->
       <main>
-
         <div class="highLevel">
-            <!-- Section displaying high level information about rewardX-->
           <section class="info">
-            <h1>RewardX</h1>
-
-            <h2>Register</h2>
-            <form action="account_action.php" method="post" >
-              <div class="formItem">
-                <label for="email">Your Email: </label>
-                <!-- Regular expression retrieved from http://regexlib.com/REDetails.aspx?regexp_id=16 -->
-                <input type="text" placeholder="Enter Email" name="email" pattern="^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$" oninvalid="setCustomValidity('Please enter a valid email address')" required>
-
-                <label for="username">Username: </label>
-                <input type="text" placeholder="Enter Username" name="username" required>
-
-                <label for="password">Password: </label>
-                <input type="password" placeholder="Enter Password" name="password" required>
-
-                <button type="submit" class="loginBtn">Register</button>
-              </div>
-            </form>
-
-            <p class="registerPortal">Already have an account? <a class="normalA" href="login.php">Log in</a></p>
+            <h2>You will receive an email notification once your order is processed.</h2>
           </section>
 
-          <section class="image_card">
-            <!-- Image icons created by fontawesome -->
-            <img src="src/rewardXCard.png" class="recardCardImg">
-          </section>
+
+            <section class="image_card">
+              <!-- Image icons created by fontawesome -->
+              <img src="src/rewardXCard.png" class="recardCardImg">
+            </section>
+
 
         </div>
+
 
       </main>
 
@@ -117,14 +171,7 @@ if (isset($_SESSION['currUser'])) { // if user is logged in
     </body>
 </html>
 
-<?php
-if($_GET["failed"] == 1) {
-  echo "<script type='text/javascript'>alert('Your emailed entered already exits, please login or enter a different email.');</script>";
-}
-if($_GET["failed"] == 2) {
-  echo "<script type='text/javascript'>alert('There is an error creating your account, please try again later.');</script>";
-}
-?>
+
 
 
 

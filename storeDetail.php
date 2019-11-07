@@ -1,3 +1,8 @@
+<?php
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -46,8 +51,16 @@
           <!-- Account dropdown -->
           <div class="dropdown-content">
             <a href="dashboard.php">Dashboard</a>
-            <a href="login.php">Login</a>
-            <a href="register.php">Register</a>
+            <?php
+              if (isset($_SESSION['currUser'])) {
+                echo "<a href=\"logout.php\">Logout</a>";
+              } else {
+                echo "
+                <a href=\"login.php\">Login</a>
+                <a href=\"register.php\">Register</a>
+                ";
+              }
+            ?>
           </div>
         </nav>
 
@@ -64,7 +77,7 @@
         // Opening a db connection
         $con = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
-        $name; $type; $des; $rating; $address; $time; $url; $price; $srcLink;
+        $name; $type; $des; $rating; $address; $time; $url; $price; $srcLink; $storeId;
 
         $gettingQuery = "SELECT * FROM Store WHERE StoreId = ". $_GET["id"];
 
@@ -86,6 +99,7 @@
           $url = $row["StoreLink"];
           $price = $row["StorePriceAverage"];
           $srcLink = $row["StoreImage"];
+          $storeId = $row["StoreId"];
         }
 
         // Free the results
@@ -108,7 +122,40 @@
 
       <span class="score">
           <?php echo $rating?> Satisfaction Score
-        <i class="far fa-star favSelect"></i> </span></h1>
+          <?php
+            // This block is used to check if the store is current
+            if(isset($_SESSION["currUser"])) {
+              // If there is a current user, get the favorite stores
+              // Getting user favorites
+
+              $userFavQuery = "SELECT * FROM Users WHERE UserId = ". $_SESSION["currUser"];
+              $favResults = mysqli_query($con, $userFavQuery);
+
+              if(!$favResults) {
+                die("Database query failed.");
+              }
+
+              $fav;
+
+              while($row = mysqli_fetch_assoc($favResults)) {
+                $fav = $row["UserFavoriteStoreId"];
+              }
+
+              mysqli_free_result($favResults);
+              $fav = explode(",", $fav);
+
+              if(in_array($storeId, $fav)) {
+                echo "<a href=\"editFav.php?favId=". $storeId."&liked=1&detail=1&open=". $_GET["open"]."\"><i class=\"fas fa-star favSelect\" style=\"color: yellow; text-shadow: 0 0 1px #000;\"></i></a>";
+              } else {
+                echo "<a href=\"editFav.php?favId=". $storeId."&liked=0&detail=1&open=". $_GET["open"]."\"><i class=\"far fa-star favSelect\"></i></a>";
+              }
+            } else {
+              echo "<i class=\"far fa-star favSelect\"></i>";
+            }
+
+          ?>
+        </span></h1>
+        <!-- <i class="fas fa-star favSelect"></i> -->
 
       <p class="storeDes"> <?php echo $des?> </p>
 
@@ -392,24 +439,32 @@
 
           <div class="eachSection">
             <i class="fas fa-dollar-sign mapIcon" style="margin-left: 2.6rem; margin-right: 0.7rem;"></i>
-            <p class="storeInfoText"> <?php echo $price; ?> / Person</p>
+            <p class="storeInfoText"> <?php if($price != -1) {echo $price;} else {echo "Based on Individuals";} ?> / Person</p>
           </div>
 
           <!-- The followings are for comments -->
-           <div class="eachSection">
-              <form>
-                <h2>Leave a review</h2>
-                <div>
-                  <label>Out of 10, how would you rate the place?</label>
-                  <input type="number" name="rating" step="0.1" class="commentInput">
+          <?php
+            if(isset($_SESSION["currUser"])) {
+              echo "
+                <div class=\"eachSection\">
+
+                  <form method=\"post\" action=\"newComment.php?storeId=".$_GET["id"]."&open=".$_GET["open"]."\">
+                    <h2>Leave a review</h2>
+                    <div>
+                      <label>Out of 10, how would you rate the place?</label>
+                      <input type=\"number\" name=\"rating\" step=\"0.1\" class=\"commentInput\" required>
+                    </div>
+
+                    <textarea name=\"comment\"></textarea>
+
+                    <button class=\"submitBtn\" type=\"submit\">Submit Review </button>
+
+                  </form>
                 </div>
+              ";
+            }
+          ?>
 
-                <textarea></textarea>
-
-                <button class="submitBtn" type="submit">Submit Review </button>
-
-              </form>
-            </div>
 
             <div class="eachSection" style="margin-top: 2rem;">
               <h2>Reviews</h2>
@@ -445,34 +500,6 @@
                   ";
                 }
               ?>
-
-              <!-- <div class="eachComment">
-                <img src="https://api.adorable.io/avatars/285/Jan.png" class="commentIcon">
-                <div class="commentName">
-                  <h3>Baljeet Kaur</h3>
-                  <p class="commentPoints">89 Score</p>
-                </div>
-
-                <p class="reviewDetail">We had an office function the other day and we brought in two platters of assorted sandwiches from Subway and everybody enjoyed it. This is a great place to do a late catering job at the office. We received excellent service.</p>
-
-              </div>
-
-              <div class="eachComment">
-                <img src="https://api.adorable.io/avatars/285/Lucy.png" class="commentIcon">
-                <div class="commentName">
-                  <h3>Lucky Nic</h3>
-                  <p class="commentPoints">5 Score</p>
-                </div>
-
-                <p class="reviewDetail">Staff member named upkar and her 2 coworkers were absolutely atrocious to deal with. 1 of them was making their personal home lunch on the counter which was some disgusting looking stew... I'm fine with employees making their lunch but not outside food where my food is being prepared. The took no care with making my sandwich either they may as well have thrown it at me when they were done. I hope management sees this and has a chat with these girls because I was a few moments away from declining my sandwich and walking out after watching it be prepared. Also this is the dirtiest subway ever. Finally to end my rant... how come with 3 girls working behind the counter it still took almost 10 minutes to take my order.. this place is a joke.</p>
-
-              </div>
-
-
-
-            </div>
-
-          </div> -->
       </section>
 
       <a class="returnBtn" href="partners.php">

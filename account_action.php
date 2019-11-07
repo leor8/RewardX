@@ -1,12 +1,6 @@
 <?php
 session_start();
 
-if(isset($_POST["username"])) {
-  echo "register";
-} else {
-  echo "login";
-}
-
 if (!isset($_SESSION['currUser'])) { //if user is not logged in
   // Getting default db varialbe
   require 'DBinfo.php';
@@ -29,10 +23,11 @@ if (!isset($_SESSION['currUser'])) { //if user is not logged in
       mysqli_free_result($DuplicateEmail);
       header('Location: register.php?failed=1');
     } else {
-      $registerQuery = "INSERT INTO Users (UserName, UserEmail, UserPassword, isAdmin) VALUES (
+      $registerQuery = "INSERT INTO Users (UserName, UserEmail, UserPassword, isAdmin, StorePoints) VALUES (
       \"". $_POST["username"] ."\",
       \"". $_POST["email"]."\",
-      \"". $_POST["password"]."\",
+      \"". hash('sha512', $_POST["password"])."\",
+      0,
       0
       )";
 
@@ -52,6 +47,7 @@ if (!isset($_SESSION['currUser'])) { //if user is not logged in
 
         while($row = mysqli_fetch_assoc($newUser)) {
           mysqli_free_result($newUser);
+          $_SESSION['currUser'] = $row["UserId"];
           header('Location: dashboard.php?id='. $row["UserId"]);
         }
       } else {
@@ -65,7 +61,7 @@ if (!isset($_SESSION['currUser'])) { //if user is not logged in
 
   } else { // login
     // Check if email already exists
-    $gettingDuplicateEmail = "SELECT * FROM Users WHERE UserEmail = \"". $_POST["email"]. "\" AND UserPassword = \"". $_POST["password"]."\"";
+    $gettingDuplicateEmail = "SELECT * FROM Users WHERE UserEmail = \"". $_POST["email"]. "\" AND UserPassword = \"". hash('sha512', $_POST["password"])."\"";
     // get results
     $DuplicateEmail = mysqli_query($con, $gettingDuplicateEmail);
 
@@ -79,6 +75,8 @@ if (!isset($_SESSION['currUser'])) { //if user is not logged in
 
     } else {
       while ($row = mysqli_fetch_assoc($DuplicateEmail)) {
+        $_SESSION['currUser'] = $row["UserId"];
+        mysqli_free_result($DuplicateEmail);
         header('Location: dashboard.php?id='. $row["UserId"]);
       }
     }
@@ -93,3 +91,8 @@ if (!isset($_SESSION['currUser'])) { //if user is not logged in
     <!-- <p>This is not part of the content</p> -->
   </body>
 </html>
+
+
+<?php
+mysqli_close($con);
+?>

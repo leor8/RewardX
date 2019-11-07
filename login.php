@@ -111,12 +111,13 @@ if (isset($_SESSION['currUser'])) { // if user is logged in
 
 
 <?php
-if(isset($_GET["failed"]) == 1) {
+
+if($_GET["failed"] == 1) {
   echo "<script type='text/javascript'>alert('Your email or password is incorrect, please try again.');</script>";
 }
-// if(isset($_GET["failed"]) == 2) {
-//   echo "<script type='text/javascript'>alert('There is an error creating your account, please try again later.');</script>";
-// }
+if($_GET["failed"] == 2) {
+  echo "<script type='text/javascript'>alert('You are not logged in. Please login or register to view.');</script>";
+}
 ?>
 
 

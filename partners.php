@@ -1,3 +1,8 @@
+<?php
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -53,8 +58,16 @@
           <!-- Account dropdown -->
           <div class="dropdown-content">
             <a href="dashboard.php">Dashboard</a>
-            <a href="login.php">Login</a>
-            <a href="register.php">Register</a>
+            <?php
+              if (isset($_SESSION['currUser'])) {
+                echo "<a href=\"logout.php\">Logout</a>";
+              } else {
+                echo "
+                <a href=\"login.php\">Login</a>
+                <a href=\"register.php\">Register</a>
+                ";
+              }
+            ?>
           </div>
         </nav>
 
@@ -168,6 +181,7 @@
             </div> -->
 
             <button class="startFilter" type="submit">Filter</button>
+            <a class="startFilterReset" href="partners.php">Reset</a>
 
           </form>
         </section>
@@ -184,6 +198,27 @@
 
               // Opening a db connection
               $con = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+
+              // Getting user favorites
+              if(isset($_SESSION["currUser"])) {
+                $userFavQuery = "SELECT * FROM Users WHERE UserId = ". $_SESSION["currUser"];
+                $favResults = mysqli_query($con, $userFavQuery);
+
+                if(!$favResults) {
+                  die("Database query failed.");
+                }
+
+                $fav;
+                while($row = mysqli_fetch_assoc($favResults)) {
+                  $fav = $row["UserFavoriteStoreId"];
+                }
+
+                mysqli_free_result($favResults);
+                $fav = explode(",", $fav);
+              }
+
+
+
 
               // Building query based on filter or if no filters are applied
 
@@ -407,9 +442,23 @@
                     $detailPageTag= "<a class=\"storeMoreBtn\" href=\"storeDetail.php?id=". $row["StoreId"]. "&open=0\">More</a>";
                   }
 
+                  $likedStore;
+                  if(isset($_SESSION["currUser"])) {
+                    if(in_array($row["StoreId"], $fav)) {
+                      $likedStore = "<a href=\"editFav.php?favId=". $row["StoreId"]."&liked=1\"><i class=\"fas fa-star favSelect\" style=\"color: yellow\"></i></a>";
+                    } else {
+                      $likedStore = "<a href=\"editFav.php?favId=". $row["StoreId"]."&liked=0\"><i class=\"far fa-star favSelect\"></i></a>";
+                    }
+                  } else {
+                    $likedStore = "<i class=\"far fa-star favSelect\"></i>";
+                  }
+
+
+
+
                   echo "
                     <div class=\"store\">
-                      <i class=\"far fa-star favSelect\"></i>
+                      ". $likedStore."
                       <img class=\"store_img\" src=\"". $row["StoreImage"]. "/1.png\">
                       <h2>". $row["StoreName"]. "<br> ($1:". $row["StorePointsPerDollar"]. " points) </h2>
 

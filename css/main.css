@@ -37,3 +37,7 @@ button {
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
+
+main {
+  min-height: 500px;
+}

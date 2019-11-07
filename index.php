@@ -1,3 +1,8 @@
+<?php
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -43,8 +48,16 @@
           <!-- Account dropdown -->
           <div class="dropdown-content">
             <a href="dashboard.php">Dashboard</a>
-            <a href="login.php">Login</a>
-            <a href="register.php">Register</a>
+            <?php
+              if (isset($_SESSION['currUser'])) {
+                echo "<a href=\"logout.php\">Logout</a>";
+              } else {
+                echo "
+                <a href=\"login.php\">Login</a>
+                <a href=\"register.php\">Register</a>
+                ";
+              }
+            ?>
           </div>
         </nav>
 
