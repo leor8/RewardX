@@ -23,10 +23,11 @@ if (!isset($_SESSION['currUser'])) { //if user is not logged in
       mysqli_free_result($DuplicateEmail);
       header('Location: register.php?failed=1');
     } else {
-      $registerQuery = "INSERT INTO Users (UserName, UserEmail, UserPassword, isAdmin, StorePoints) VALUES (
+      $registerQuery = "INSERT INTO Users (UserName, UserEmail, UserPassword, isAdmin, StorePoints, IsMerchandise) VALUES (
       \"". $_POST["username"] ."\",
       \"". $_POST["email"]."\",
       \"". hash('sha512', $_POST["password"])."\",
+      0,
       0,
       0
       )";

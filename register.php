@@ -86,7 +86,7 @@ if (isset($_SESSION['currUser'])) { // if user is logged in
               <div class="formItem">
                 <label for="email">Your Email: </label>
                 <!-- Regular expression retrieved from http://regexlib.com/REDetails.aspx?regexp_id=16 -->
-                <input type="text" placeholder="Enter Email" name="email" pattern="^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$" oninvalid="setCustomValidity('Please enter a valid email address')" required>
+                <input type="text" placeholder="Enter Email" name="email" pattern="^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$" required>
 
                 <label for="username">Username: </label>
                 <input type="text" placeholder="Enter Username" name="username" required>

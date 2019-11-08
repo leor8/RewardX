@@ -453,6 +453,19 @@ session_start();
                     $likedStore = "<i class=\"far fa-star favSelect\"></i>";
                   }
 
+                  $iconBasedOnType;
+
+                  switch($row["StoreType"]) {
+                    case "Shop":
+                      $iconBasedOnType = "<i class=\"fas fa-shopping-basket storeIcon\"></i>";
+                      break;
+                    case "Activity":
+                      $iconBasedOnType = "<i class=\"fas fa-cloud-sun storeIcon\"></i>";
+                      break;
+                    case "Food":
+                      $iconBasedOnType = "<i class=\"fas fa-utensils storeIcon\"></i>";
+                      break;
+                  }
 
 
 
@@ -468,7 +481,7 @@ session_start();
                        </div>
 
                        <div class=\"storeSection\">
-                         <i class=\"fas fa-shopping-basket storeIcon\"></i>
+                         ". $iconBasedOnType. "
                          <p class=\"storeText\">". $row["StoreType"]. "</p>
                        </div>
 
