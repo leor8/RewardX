@@ -229,7 +229,7 @@ session_start();
               if(isset($_POST["nameSearch"])) {
                 // if nameSearch exists that means a search query is entered
                 $storesQuery = "SELECT * FROM Store WHERE StoreName LIKE '%". $_POST["nameSearch"]."%'";
-              } else if(count($_POST) >= 1) {
+              } else if(count($_POST) >= 1) { // if any filter item is applied
                 $storesQuery .= "WHERE ";
                 // if name Search does not exist but there is something passed by post variable, certain filter is checked.
                 if(isset($_POST["cheap"])) {
@@ -237,15 +237,15 @@ session_start();
                 }
 
                 if(isset($_POST["food"])) {
-                  $storesQuery .= "StoreType = \"Food\" AND ";
+                  $storesQuery .= "StoreType = \"Food\" OR  ";
                 }
 
                 if(isset($_POST["shop"])) {
-                  $storesQuery .= "StoreType = \"Shop\" AND ";
+                  $storesQuery .= "StoreType = \"Shop\" OR  ";
                 }
 
                 if(isset($_POST["activity"])) {
-                  $storesQuery .= "StoreType = \"Activity\" AND ";
+                  $storesQuery .= "StoreType = \"Activity\" OR ";
                 }
 
                 if($_POST["priceSlider"] >= 5) {
@@ -300,34 +300,42 @@ session_start();
                   case 'Sun':
                     $startingTime = explode('_', $hoursByDay[0])[0];
                     $endTime = explode('_', $hoursByDay[0])[1];
-
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
-                      $openNow = true;
+                    if($startingTime == "Closed") {
+                      $currOpenStatus = "Closed";
                     } else {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      // Converting time to a formate that is decodeable by strtotime
+                      $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
+                      $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
+
+
+
+                      if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                        $openNow = true;
+                      } else {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      }
                     }
+
                     break;
 
                   case 'Mon':
                     $startingTime = explode('_', $hoursByDay[1])[0];
                     $endTime = explode('_', $hoursByDay[1])[1];
 
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
-                      $openNow = true;
+                    if($startingTime == "Closed") {
+                      $currOpenStatus = "Closed";
                     } else {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      // Converting time to a formate that is decodeable by strtotime
+                      $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
+                      $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
+
+                      if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                        $openNow = true;
+                      } else {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      }
                     }
                     break;
 
@@ -335,15 +343,19 @@ session_start();
                     $startingTime = explode('_', $hoursByDay[2])[0];
                     $endTime = explode('_', $hoursByDay[2])[1];
 
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
-                      $openNow = true;
+                    if($startingTime == "Closed") {
+                      $currOpenStatus = "Closed";
                     } else {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      // Converting time to a formate that is decodeable by strtotime
+                      $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
+                      $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
+
+                      if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                        $openNow = true;
+                      } else {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      }
                     }
                     break;
 
@@ -351,15 +363,19 @@ session_start();
                     $startingTime = explode('_', $hoursByDay[3])[0];
                     $endTime = explode('_', $hoursByDay[3])[1];
 
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
-                      $openNow = true;
+                    if($startingTime == "Closed") {
+                      $currOpenStatus = "Closed";
                     } else {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      // Converting time to a formate that is decodeable by strtotime
+                      $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
+                      $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
+
+                      if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                        $openNow = true;
+                      } else {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      }
                     }
                     break;
 
@@ -367,15 +383,19 @@ session_start();
                     $startingTime = explode('_', $hoursByDay[4])[0];
                     $endTime = explode('_', $hoursByDay[4])[1];
 
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
-                      $openNow = true;
+                    if($startingTime == "Closed") {
+                      $currOpenStatus = "Closed";
                     } else {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      // Converting time to a formate that is decodeable by strtotime
+                      $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
+                      $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
+
+                      if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                        $openNow = true;
+                      } else {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      }
                     }
                     break;
 
@@ -383,31 +403,40 @@ session_start();
                     $startingTime = explode('_', $hoursByDay[5])[0];
                     $endTime = explode('_', $hoursByDay[5])[1];
 
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
+                    if($startingTime == "Closed") {
+                        $currOpenStatus = "Closed";
+                      } else {
 
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
-                      $openNow = true;
-                    } else {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
-                    }
-                    break;
+                        // Converting time to a formate that is decodeable by strtotime
+                        $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
+                        $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
+
+                        if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
+                          $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                          $openNow = true;
+                        } else {
+                          $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                        }
+                      }
+                      break;
 
                   case 'Sat':
                     $startingTime = explode('_', $hoursByDay[6])[0];
                     $endTime = explode('_', $hoursByDay[6])[1];
 
-                    // Converting time to a formate that is decodeable by strtotime
-                    $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
-                    $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
-
-                    if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
-                      $openNow = true;
+                    if($startingTime == "Closed") {
+                      $currOpenStatus = "Closed";
                     } else {
-                      $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      // Converting time to a formate that is decodeable by strtotime
+                      $startingTime = substr($startingTime, 0, 5) . " " . substr($startingTime, 5);
+                      $endTime = substr($endTime, 0, 5) . " " . substr($endTime, 5);
+
+                      if(strtotime($currTime) > strtotime($startingTime) && strtotime($currTime) < strtotime($endTime)) {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(OPEN)";
+                        $openNow = true;
+                      } else {
+                        $currOpenStatus = $startingTime. " to ". $endTime. "(CLOSED)";
+                      }
                     }
                     break;
 
@@ -450,7 +479,7 @@ session_start();
                       $likedStore = "<a href=\"editFav.php?favId=". $row["StoreId"]."&liked=0\"><i class=\"far fa-star favSelect\"></i></a>";
                     }
                   } else {
-                    $likedStore = "<i class=\"far fa-star favSelect\"></i>";
+                    $likedStore = "<i class=\"far fa-star favSelect\" onClick=\"alert('You need to login to do this action.')\"></i>";
                   }
 
                   $iconBasedOnType;
@@ -465,6 +494,15 @@ session_start();
                     case "Food":
                       $iconBasedOnType = "<i class=\"fas fa-utensils storeIcon\"></i>";
                       break;
+                  }
+
+                  $ratingIcon;
+                  if($row["StoreRatings"] < 5.5) {
+                    $ratingIcon = "<i class=\"far fa-frown-open storeIcon\"></i>";
+                  } else if ($row["StoreRatings"] > 8) {
+                    $ratingIcon = "<i class=\"far fa-smile storeIcon\"></i>";
+                  } else {
+                    $ratingIcon = "<i class=\"far fa-meh storeIcon\"></i>";
                   }
 
 
@@ -491,7 +529,7 @@ session_start();
                        </div>
 
                        <div class=\"storeSection\">
-                         <i class=\"far fa-smile storeIcon\"></i>
+                          ". $ratingIcon. "
                          <p class=\"storeText\">". $row["StoreRatings"]. " Satisfactory Score</p>
                        </div>
 

@@ -44,15 +44,25 @@
   }
 
   $cost;
+  $quantity;
 
   while($row = mysqli_fetch_assoc($rewardCost)) {
     $cost = $row["RewardPoints"];
+    $quantity = $row["RewardQuantityLeft"];
   }
 
   mysqli_free_result($rewardCost);
 
   if($UserpointsLeft > $cost) {
-    // header('Location: shippingInformation.php?productId='. $_GET["productId"]);
+    // Update user's points
+    $newPoints = $UserpointsLeft - $cost;
+    $updateUserPoints = "UPDATE Users SET StorePoints = ". $newPoints." WHERE UserId = ". $_SESSION["currUser"];
+    $updatepointsresult = mysqli_query($con, $updateUserPoints);
+
+    // -1 reward product quantity
+    $newQuantity = $quantity - 1;
+    $updateQuantity = "UPDATE Rewards SET RewardQuantityLeft = ". $newQuantity." WHERE RewardId = ". $_GET["productId"];
+    mysqli_query($con, $updateQuantity);
   } else {
     echo "<script type='text/javascript'>alert('You do not have enough points to redeem this item.');</script>";
     header('Location: reward.php?failed=1');

@@ -57,6 +57,7 @@
     // header('Location: shippingInformation.php?productId='. $_GET["productId"]);
   } else {
     echo "<script type='text/javascript'>alert('You do not have enough points to redeem this item.');</script>";
+    mysqli_close($con);
     header('Location: reward.php?failed=1');
   }
 

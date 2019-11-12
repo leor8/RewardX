@@ -46,10 +46,66 @@
   $insertCommentResult = mysqli_query($con, $newCommentQuery);
   if(!$insertCommentResult) {
     die("db query failed");
-  } else {
-    mysqli_close($con);
-    header('Location: storeDetail.php?id='. $_GET["storeId"].'&open='. $_GET["open"]);
   }
+
+  // If the comment is posted
+
+  // Updating store ratings
+
+  // Getting the count of the store numbers
+  $CommentCountQuery = "SELECT COUNT(*) FROM Comments WHERE BelongStore = ". $storeId;
+
+  $CommentCount = mysqli_query($con, $CommentCountQuery);
+
+  if(!$CommentCount) {
+    die("db query failed.");
+  }
+
+  $count = mysqli_fetch_assoc($CommentCount)["COUNT(*)"];
+
+  $count = intval($count);
+
+  mysqli_free_result($CommentCount);
+
+  // Get all the comments and its rating total
+  $CommentRatingQuery = "SELECT * FROM Comments WHERE BelongStore = ". $storeId;
+  $CommentRating = mysqli_query($con, $CommentRatingQuery);
+
+  if(!$CommentRating) {
+    die("db query failed.");
+  }
+
+  $totalRatingsToBeDivided = 0;
+
+  while($row = mysqli_fetch_assoc($CommentRating)) {
+    $totalRatingsToBeDivided += $row["UserRating"];
+  }
+
+  // echo $totalRatingsToBeDivided;
+  // echo $ratings;
+  $updatedRatings = round($totalRatingsToBeDivided/$count, 1);
+
+  // // Update the store rating in store db
+  $updateStoreRatingQuery = "UPDATE Store SET StoreRatings = ". $updatedRatings." WHERE StoreId = ". $storeId;
+  $updateStoreRating = mysqli_query($con, $updateStoreRatingQuery);
+
+  mysqli_close($con);
+  header('Location: storeDetail.php?id='. $_GET["storeId"].'&open='. $_GET["open"]);
+
+
 
 
 ?>
+
+
+
+
+
+
+
+
+
+
+
+
+

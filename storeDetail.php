@@ -150,7 +150,7 @@ session_start();
                 echo "<a href=\"editFav.php?favId=". $storeId."&liked=0&detail=1&open=". $_GET["open"]."\"><i class=\"far fa-star favSelect\"></i></a>";
               }
             } else {
-              echo "<i class=\"far fa-star favSelect\"></i>";
+              echo "<i class=\"far fa-star favSelect\" onClick=\"alert('You need to login to do this action.')\"></i>";
             }
 
           ?>
@@ -191,7 +191,12 @@ session_start();
                   $timeArr = explode(" ", $time);
 
                   for($index = 0; $index < count($timeArr); $index++) {
-                    $timeArr[$index] = str_replace("_", "-" , $timeArr[$index]);
+                    if($timeArr[$index] == "Closed_Closed") {
+                      $timeArr[$index] = "Closed";
+                    } else {
+                      $timeArr[$index] = str_replace("_", "-" , $timeArr[$index]);
+                    }
+
                     if($index == 0) {
                       $timeArr[$index] = "Sunday ". $timeArr[$index];
                     } else if ($index == 1) {
@@ -207,6 +212,7 @@ session_start();
                     } else if ($index == 6) {
                       $timeArr[$index] = "Saturday ". $timeArr[$index];
                     }
+
 
 
                   }

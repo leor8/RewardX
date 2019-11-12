@@ -112,14 +112,17 @@ session_start();
           }
 
           while($row = mysqli_fetch_assoc($allRewardsAvailble)) {
-            echo "
-              <div class=\"item\">
-                <img src=\"". $row["RewardImage"]."\" class=\"itemImg\">
-                <p class=\"itemHeading\">". $row["RewardName"]."</p>
-                <p class=\"itemText\">". $row["RewardDescription"]. " <br/><strong>(". $row["RewardQuantityLeft"]." Left)</strong></p>
-                <a class=\"itemBtn\" href=\"redeemReward.php?productId=". $row["RewardId"]."\">Redeem: ". $row["RewardPoints"]."pt </a>
-              </div>
-            ";
+            if($row["RewardQuantityLeft"] > 0) {
+              echo "
+                <div class=\"item\">
+                  <img src=\"". $row["RewardImage"]."\" class=\"itemImg\">
+                  <p class=\"itemHeading\">". $row["RewardName"]."</p>
+                  <p class=\"itemText\">". $row["RewardDescription"]. " <br/><strong>(". $row["RewardQuantityLeft"]." Left)</strong></p>
+                  <a class=\"itemBtn\" href=\"redeemReward.php?productId=". $row["RewardId"]."\">Redeem: ". $row["RewardPoints"]."pt </a>
+                </div>
+              ";
+            }
+
           }
 
           mysqli_free_result($allRewardsAvailble);
