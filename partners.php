@@ -21,12 +21,13 @@ session_start();
         <link href="https://fonts.googleapis.com/css?family=Merriweather:900&display=swap" rel="stylesheet">
 
         <script
-        src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
-        crossorigin="anonymous"></script>
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
 
         <script type="text/javascript" src="js/nav.js"></script>
         <script src="https://kit.fontawesome.com/c44e3d0e87.js"></script>
+        <script type="text/javascript" src=js/handleSearch.js></script>
 
         <script type="text/javascript">
           function updateTextInput(val) {
@@ -80,21 +81,15 @@ session_start();
         <!-- Filter -->
         <section class="filter">
 
-          <form class="filterHeader" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+          <form class="filterHeader">
             <h2 class="filterHeading">RewardX</h2>
-            <?php
-            // Check if the filter result is by name search
-              if(isset($_POST["nameSearch"])){
-                echo "<input type=\"text\" name=\"nameSearch\" class=\"filterSearch\" value=". $_POST["nameSearch"]. " placeholder=\"Search for a shop\">";
-              } else {
-                echo "<input type=\"text\" name=\"nameSearch\" class=\"filterSearch\" placeholder=\"Search for a shop\">";
-              }
-            ?>
+            <input type="text" name="nameSearch" class="filterSearch" placeholder="Search for a shop">
 
             <button class="searchBtn">Search</button>
           </form>
 
-          <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+          <form class="filterRadios">
+
 <!--
             <div class="filterCheckbox">
               <label>Within 5 KM</label>
@@ -103,58 +98,27 @@ session_start();
 
             <div class="filterCheckbox">
               <label>Opens Now</label>
-              <?php
-                if(isset($_POST["open"])){
-                  echo "<input type=\"checkbox\" name=\"open\" value=\"Open\" checked>";
-                } else {
-                  echo "<input type=\"checkbox\" name=\"open\" value=\"Open\">";
-                }
-              ?>
+              <input type="checkbox" name="open" value="Open">
             </div>
 
             <div class="filterCheckbox">
               <label>Cheap Shop</label>
-              <?php
-                if(isset($_POST["cheap"])){
-                  echo "<input type=\"checkbox\" name=\"cheap\" value=\"Cheap\" checked>";
-                } else {
-                  echo "<input type=\"checkbox\" name=\"cheap\" value=\"Cheap\">";
-                }
-              ?>
-
+              <input type="checkbox" name="cheap" value="Cheap">
             </div>
 
             <div class="filterCheckbox">
               <label>Restuarants</label>
-              <?php
-                if(isset($_POST["food"])){
-                  echo "<input type=\"checkbox\" name=\"food\" value=\"Food\" checked>";
-                } else {
-                  echo "<input type=\"checkbox\" name=\"food\" value=\"Food\">";
-                }
-              ?>
+              <input type="checkbox" name="food" value="Food">
             </div>
 
             <div class="filterCheckbox">
               <label>Grocery Stores</label>
-              <?php
-                if(isset($_POST["shop"])){
-                  echo "<input type=\"checkbox\" name=\"shop\" value=\"Shop\" checked>";
-                } else {
-                  echo "<input type=\"checkbox\" name=\"shop\" value=\"Shop\">";
-                }
-              ?>
+              <input type="checkbox" name="shop" value="Shop">
             </div>
 
             <div class="filterCheckbox">
               <label>Activity</label>
-              <?php
-                if(isset($_POST["activity"])){
-                  echo "<input type=\"checkbox\" name=\"activity\" value=\"Activity\" checked>";
-                } else {
-                  echo "<input type=\"checkbox\" name=\"activity\" value=\"Activity\">";
-                }
-              ?>
+              <input type="checkbox" name="activity" value="Activity">
             </div>
 
             <!-- TO break checkboxes and sliders -->
@@ -162,16 +126,8 @@ session_start();
 
             <div class="slidecontainer">
               <label>Price Per Person</label>
-
-              <?php
-                if(isset($_POST["priceSlider"])){
-                  echo "<input type=\"text\" id=\"textInput\" value=\"$". $_POST["priceSlider"]. "\" class=\"priceDisplay\">";
-                  echo "<input name=\"priceSlider\" type=\"range\" min=\"0\" max=\"99\" value=\"". $_POST["priceSlider"]. "\" class=\"slider\" id=\"priceSlider\" onchange=\"updateTextInput(this.value);\">";
-                } else {
-                  echo "<input type=\"text\" id=\"textInput\" value=\"$0\" class=\"priceDisplay\">";
-                  echo "<input name=\"priceSlider\" type=\"range\" min=\"0\" max=\"99\" value=\"0\" class=\"slider\" id=\"priceSlider\" onchange=\"updateTextInput(this.value);\">";
-                }
-              ?>
+              <input type="text" id="textInput" value="$0" class="priceDisplay">
+              <input name="priceSlider" type="range" min="0" max="99" value="0" class="slider" id="priceSlider" onchange="updateTextInput(this.value);">
             </div>
 
 <!--             <div class="slidecontainer">
@@ -180,7 +136,7 @@ session_start();
               <input name="rangeSlider"type="range" min="5" max="100" value="5" class="slider" id="distanceSlider" onchange="updateDistance(this.value);">
             </div> -->
 
-            <button class="startFilter" type="submit">Filter</button>
+            <button class="startFilter">Filter</button>
             <a class="startFilterReset" href="partners.php">Reset</a>
 
           </form>
@@ -192,8 +148,6 @@ session_start();
 
             <!-- The following php block is used to find the current week ofthe day and check if the shop is open when user first enters the page -->
             <?php
-
-              // Getting default db varialbe
               require 'DBinfo.php';
 
               // Opening a db connection
@@ -217,53 +171,7 @@ session_start();
                 $fav = explode(",", $fav);
               }
 
-
-
-
-              // Building query based on filter or if no filters are applied
-
               $storesQuery = "SELECT * FROM Store ";
-
-              $checkOpen = false;
-
-              if(isset($_POST["nameSearch"])) {
-                // if nameSearch exists that means a search query is entered
-                $storesQuery = "SELECT * FROM Store WHERE StoreName LIKE '%". $_POST["nameSearch"]."%'";
-              } else if(count($_POST) >= 1) { // if any filter item is applied
-                $storesQuery .= "WHERE ";
-                // if name Search does not exist but there is something passed by post variable, certain filter is checked.
-                if(isset($_POST["cheap"])) {
-                  $storesQuery .= "StorePriceAverage <= 15 AND StorePriceAverage > 0 AND ";
-                }
-
-                if(isset($_POST["food"])) {
-                  $storesQuery .= "StoreType = \"Food\" OR  ";
-                }
-
-                if(isset($_POST["shop"])) {
-                  $storesQuery .= "StoreType = \"Shop\" OR  ";
-                }
-
-                if(isset($_POST["activity"])) {
-                  $storesQuery .= "StoreType = \"Activity\" OR ";
-                }
-
-                if($_POST["priceSlider"] >= 5) {
-                  $storesQuery .= "StorePriceAverage <= ". $_POST["priceSlider"] ." AND StorePriceAverage > 0 AND ";
-                }
-
-                // Removing the last AND from query
-                $storesQuery = substr($storesQuery, 0, -5);
-              }
-
-              if(isset($_POST["open"])) { // Open will not be interacting with the database instead with the code only
-                  $checkOpen = true;
-              }
-
-
-              // Else just select all the stores
-
-              // echo $storesQuery;
 
               // get results
               $storeResult = mysqli_query($con, $storesQuery);
@@ -443,6 +351,13 @@ session_start();
 
                   }
 
+                  $detailPageTag;
+                  if($openNow) {
+                    $detailPageTag= "<a class=\"storeMoreBtn\" href=\"storeDetail.php?id=". $row["StoreId"]. "&open=1\">More</a>";
+                  } else {
+                    $detailPageTag= "<a class=\"storeMoreBtn\" href=\"storeDetail.php?id=". $row["StoreId"]. "&open=0\">More</a>";
+                  }
+
                   // Check if the price average exits
                   $priceAverage;
                   if($row["StorePriceAverage"] == -1) {
@@ -452,31 +367,12 @@ session_start();
                   }
 
 
-                  // Outputing the card after setting the time
-
-                  if($checkOpen) { // If open is checked
-                    if(!$openNow) {
-                      continue;
-                    }
-                  }
-
-                  if(!$displayed) { // only run once for faster perfromance
-                    $displayed = true;
-                  }
-
-                  $detailPageTag;
-                  if($openNow) {
-                    $detailPageTag= "<a class=\"storeMoreBtn\" href=\"storeDetail.php?id=". $row["StoreId"]. "&open=1\">More</a>";
-                  } else {
-                    $detailPageTag= "<a class=\"storeMoreBtn\" href=\"storeDetail.php?id=". $row["StoreId"]. "&open=0\">More</a>";
-                  }
-
                   $likedStore;
                   if(isset($_SESSION["currUser"])) {
                     if(in_array($row["StoreId"], $fav)) {
-                      $likedStore = "<a href=\"editFav.php?favId=". $row["StoreId"]."&liked=1\"><i class=\"fas fa-star favSelect\" style=\"color: yellow\"></i></a>";
+                      $likedStore = "<i class=\"fas fa-star favSelect selectable\" style=\"color: yellow\"></i>";
                     } else {
-                      $likedStore = "<a href=\"editFav.php?favId=". $row["StoreId"]."&liked=0\"><i class=\"far fa-star favSelect\"></i></a>";
+                      $likedStore = "<i class=\"far fa-star favSelect selectable\"></i>";
                     }
                   } else {
                     $likedStore = "<i class=\"far fa-star favSelect\" onClick=\"alert('You need to login to do this action.')\"></i>";
@@ -508,7 +404,7 @@ session_start();
 
 
                   echo "
-                    <div class=\"store\">
+                    <div class=\"store\" id=\"". $row["StoreId"]."\">
                       ". $likedStore."
                       <img class=\"store_img\" src=\"". $row["StoreImage"]. "/1.png\">
                       <h2>". $row["StoreName"]. "<br> ($1:". $row["StorePointsPerDollar"]. " points) </h2>
@@ -537,18 +433,16 @@ session_start();
 
                     </div>
                   ";
+                }
 
-              }
+                  // Free the results
+                  mysqli_free_result($storeResult);
 
-              // If there is no results found
-              if (mysqli_num_rows($storeResult) == 0 || !$displayed) {
-                echo "<p style=\"margin: auto; margin-top: 2rem; margin-bottom: 2rem;\">Your search did not return any results, please try again</p>";
-              }
-              // Free the results
-              mysqli_free_result($storeResult);
+                  // Close db connection
+                  mysqli_close($con);
 
-              // Close db connection
-              mysqli_close($con);
+
+
             ?>
 
           </div>

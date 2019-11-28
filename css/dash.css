@@ -140,7 +140,20 @@ h1, h2 {
   color: red;
 }
 
+.removeFavBtn {
+  padding-top: .5rem;
+  background-color: transparent;
+  border: 2px solid lightgrey;
+  margin: auto;
+  display: block;
+  height: 45px;
 
+  cursor: pointer;
+}
+
+.removeFavBtn:hover {
+  color: red;
+}
 
 
 

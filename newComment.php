@@ -7,7 +7,7 @@
   $comment = $_POST["comment"];
   $userName;
   $userId = $_SESSION["currUser"];
-  $storeId = $_GET["storeId"];
+  $storeId = $_POST["storeId"];
 
   if($_POST["rating"] > 10) {
     $ratings = 10;
@@ -90,7 +90,20 @@
   $updateStoreRating = mysqli_query($con, $updateStoreRatingQuery);
 
   mysqli_close($con);
-  header('Location: storeDetail.php?id='. $_GET["storeId"].'&open='. $_GET["open"]);
+
+  echo "
+      <div class=\"eachComment\">
+        <img src=\"https://api.adorable.io/avatars/285/". $userName.".png\" class=\"commentIcon\">
+        <div class=\"commentName\">
+          <h3>". $userName. "</h3>
+          <p class=\"commentPoints\">". $ratings." Score</p>
+        </div>
+
+        <p class=\"reviewDetail\">". $comment."</p>
+        <p class=\"updatedRatings\">". $updatedRatings."</p>
+      </div>
+      ";
+  // header('Location: storeDetail.php?id='. $_GET["storeId"].'&open='. $_GET["open"]);
 
 
 

@@ -63,10 +63,11 @@ if(!isset($_SESSION["currUser"])) {
         <link href="https://fonts.googleapis.com/css?family=Merriweather:900&display=swap" rel="stylesheet">
 
         <script
-        src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
-        crossorigin="anonymous"></script>
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
 
+        <script type="text/javascript" src="js/removeFavFromDashAJAX.js"></script>
         <script type="text/javascript" src="js/nav.js"></script>
         <script src="https://kit.fontawesome.com/c44e3d0e87.js"></script>
     </head>
@@ -142,27 +143,6 @@ if(!isset($_SESSION["currUser"])) {
               echo "<p>You do not have favorite stores, go browswer all the stores and select few of your favorite stores!</p>";
             } else {
               $userFavArr = explode(',', $userFavorite);
-
-              // If remove button is clicked, remove before displaying and also call a query to remove from database
-              if(isset($_GET["removeId"])){
-                if(array_search($_GET["removeId"], $userFavArr) !== false) {
-                  unset($userFavArr[array_search($_GET["removeId"], $userFavArr)]); // array search looks for the index of the removed Id and use unset to remove the item from the array completely.
-
-                  // Build the new fab stores
-                  $newFavId;
-                  $updateFav;
-                  if(count($userFavArr) == 0) {
-                    $newFavId = "NULL";
-                    $updateFav = "UPDATE Users SET UserFavoriteStoreId = ". $newFavId." WHERE UserId = ". $_SESSION["currUser"];
-                  } else {
-                    $newFavId = join(",", $userFavArr);
-                    $updateFav = "UPDATE Users SET UserFavoriteStoreId = \"". $newFavId."\" WHERE UserId = ". $_SESSION["currUser"];
-                  }
-
-                  mysqli_query($con, $updateFav);
-                }
-
-              }
 
               // Building query
               if(count($userFavArr) > 0) {
@@ -300,8 +280,8 @@ if(!isset($_SESSION["currUser"])) {
                     $storeURL = "<a class=\"favBtn\" href=\"storeDetail.php?id=". $row["StoreId"]. "&open=0\">Visit Shop</a>";
                   }
 
-                  $removeStoreURL = "<a class=\"favBtn\" href=\"dashboard.php?removeId=". $row["StoreId"]. "\">Remove</a>";
-
+                  // $removeStoreURL = "<a class=\"favBtn\" href=\"dashboard.php?removeId=". $row["StoreId"]. "\">Remove</a>";
+                  $removeStoreURL = "<button class=\"removeFavBtn\" id=\"".$row["StoreId"]."\">Remove</button>";
                   echo $sectionInfo.
                   "
                     <i class=\"fas fa-star iconStar\"></i>

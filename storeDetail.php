@@ -22,10 +22,12 @@ session_start();
         <link href="https://fonts.googleapis.com/css?family=Merriweather:900&display=swap" rel="stylesheet">
 
         <script
-        src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
-        crossorigin="anonymous"></script>
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
 
+        <script type="text/javascript" src=js/handleSearch.js></script>
+        <script type="text/javascript" src=js/commentAJAX.js></script>
         <script type="text/javascript" src="js/nav.js"></script>
         <script src="https://kit.fontawesome.com/c44e3d0e87.js"></script>
     </head>
@@ -145,9 +147,9 @@ session_start();
               $fav = explode(",", $fav);
 
               if(in_array($storeId, $fav)) {
-                echo "<a href=\"editFav.php?favId=". $storeId."&liked=1&detail=1&open=". $_GET["open"]."\"><i class=\"fas fa-star favSelect\" style=\"color: yellow; text-shadow: 0 0 1px #000;\"></i></a>";
+                echo "<i class=\"fas fa-star favSelect selectable\" style=\"color: yellow; text-shadow: 0 0 1px #000;\" id=\"". $storeId."\"></i>";
               } else {
-                echo "<a href=\"editFav.php?favId=". $storeId."&liked=0&detail=1&open=". $_GET["open"]."\"><i class=\"far fa-star favSelect\"></i></a>";
+                echo "<i class=\"far fa-star favSelect selectable\" id=\"". $storeId."\"></i>";
               }
             } else {
               echo "<i class=\"far fa-star favSelect\" onClick=\"alert('You need to login to do this action.')\"></i>";
@@ -454,7 +456,7 @@ session_start();
               echo "
                 <div class=\"eachSection\">
 
-                  <form method=\"post\" action=\"newComment.php?storeId=".$_GET["id"]."&open=".$_GET["open"]."\">
+                  <form class=\"commentForm\">
                     <h2>Leave a review</h2>
                     <div>
                       <label>Out of 10, how would you rate the place?</label>
@@ -463,7 +465,7 @@ session_start();
 
                     <textarea name=\"comment\"></textarea>
 
-                    <button class=\"submitBtn\" type=\"submit\">Submit Review </button>
+                    <button class=\"submitBtn\">Submit Review </button>
 
                   </form>
                 </div>
@@ -472,8 +474,9 @@ session_start();
           ?>
 
 
-            <div class="eachSection" style="margin-top: 2rem;">
-              <h2>Reviews</h2>
+            <h2>Reviews</h2>
+            <div class="eachSection commentSection" style="margin-top: 2rem;">
+
 
               <!-- TODO: The comment should be loaded from a comment sql table (Needs to be created) -->
               <!-- The following comments are retrieved from google reviews AS A PLACEHOLDER to show the visuals-->
@@ -526,6 +529,7 @@ session_start();
 
 // Close Connection
 mysqli_close($con);
+
 ?>
 
 

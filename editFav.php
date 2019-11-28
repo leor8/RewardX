@@ -36,38 +36,34 @@
   }
 
 
-  if($_GET["liked"] == 1) { // If the store is already liked
-    unset($fav[array_search($_GET["favId"], $fav)]);
+  if($_POST["liked"] == 1) { // If the store is already liked
+    unset($fav[array_search($_POST["favId"], $fav)]);
     $Newfav = join(",", $fav);
 
     $updateFav = "UPDATE Users SET UserFavoriteStoreId = \"". $Newfav."\" WHERE UserId = ". $_SESSION["currUser"];
 
-    mysqli_query($con, $updateFav);
+    $result = mysqli_query($con, $updateFav);
 
-    if(isset($_GET["detail"])){
-      mysqli_close($con);
-      header('Location: storeDetail.php?id='. $_GET["favId"].'&open='. $_GET["open"]);
+    if($result) {
+      echo "1";
     } else {
-      mysqli_close($con);
-      header('Location: partners.php');
+      echo "0";
     }
 
 
   } else { // If the store is not liked
-    array_push($fav, $_GET["favId"]);
+    array_push($fav, $_POST["favId"]);
 
     $Newfav = join(",", $fav);
 
     $updateFav = "UPDATE Users SET UserFavoriteStoreId = \"". $Newfav."\" WHERE UserId = ". $_SESSION["currUser"];
 
-    mysqli_query($con, $updateFav);
+    $result = mysqli_query($con, $updateFav);
 
-    if(isset($_GET["detail"])){
-      mysqli_close($con);
-      header('Location: storeDetail.php?id='. $_GET["favId"].'&open='. $_GET["open"]);
+    if($result) {
+      echo "1";
     } else {
-      mysqli_close($con);
-      header('Location: partners.php');
+      echo "0";
     }
   }
 
