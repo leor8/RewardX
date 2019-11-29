@@ -7,6 +7,7 @@
 
   // Opening a db connection
   $con = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+  // mysqli_set_charset($con, "utf8");
 
   // Getting user favorites
   if(isset($_SESSION["currUser"])) {
@@ -64,12 +65,13 @@
     }
 
     if(isset($_POST["activity"])) {
-      $storesQuery .= "StoreType = \"Activity\" OR ";
+      $storesQuery .= "StoreType = \"Activity\" OR  ";
     }
 
     // Removing the last AND from query
     $storesQuery = substr($storesQuery, 0, -5);
   }
+
 
   if(isset($_POST["open"])) { // Open will not be interacting with the database instead with the code only
       $checkOpen = true;

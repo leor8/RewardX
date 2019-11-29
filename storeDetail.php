@@ -460,7 +460,7 @@ session_start();
                     <h2>Leave a review</h2>
                     <div>
                       <label>Out of 10, how would you rate the place?</label>
-                      <input type=\"number\" name=\"rating\" step=\"0.1\" class=\"commentInput\" required>
+                      <input type=\"number\" name=\"rating\" step=\"0.1\" class=\"commentInput\">
                     </div>
 
                     <textarea name=\"comment\"></textarea>

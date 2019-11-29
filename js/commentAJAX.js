@@ -2,6 +2,10 @@ $(document).ready(function() {
   $(".submitBtn").on('click', function(events) {
     events.preventDefault();
 
+    if($(".commentInput").val() == "") {
+      alert("You need to at least provide a rating score.");
+      return;
+    }
     // Modifiy the serialized form with the store id retrieved from the icon called selectable
     // The selectable class will only be added if there is a current user and the form is only accessible by people who logged in
     // Therefore there is no reason for double checking

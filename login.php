@@ -84,7 +84,7 @@ if (isset($_SESSION['currUser'])) { // if user is logged in
 
                 <button type="submit" class="loginBtn">Login</button>
 
-                <a class="forgotPwd">Forgot your password?</a>
+                <!-- <a class="forgotPwd">Forgot your password?</a> -->
               </div>
             </form>
 
